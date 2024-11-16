@@ -1,0 +1,322 @@
+body {
+    overflow-x: hidden;
+}
+
+.dbw-cost-calc-wrapper {
+    max-width: 1310px;
+    margin: auto;
+    overflow: visible;
+    padding: 22px 29px;
+}
+
+body .dbw-cost-calc-title {
+    font-size: 30px;
+    line-height: 122.5%;
+    text-align: center;
+}
+
+.dbw-cost-calc-fields {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 7.5%;
+    margin-top: 75px;
+}
+
+.dbw-cost-calc-fields-col {
+    flex-grow: 1;
+    flex-basis: 0;
+    padding: 75px 28px 45px;
+    border-radius: 30px;
+    background: #fff;
+}
+
+.dbw-cost-calc-shadow {
+    box-shadow: 0 100px 80px 0 #2245B412,
+        0 41.78px 33.42px 0 #2245B40D,
+        0 22.34px 17.87px 0 #2245B40A,
+        0 12.52px 10.02px 0 #2245B40A,
+        0 6.65px 5.32px 0 #2245B408,
+        0 2.77px 2.21px 0 #2245B405;
+}
+
+body .dbw-cost-calc-fields-col-title {
+    font-size: 22px;
+    line-height: 122.5%;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.dbw-cost-calc-field label {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 122%;
+    color: #555;
+    margin: 25px 0;
+    gap: 30px;
+}
+
+.dbw-cost-calc-fields-types .dbw-cost-calc-field label {
+    align-items: center;
+}
+
+.dbw-cost-calc-field input {
+    position: relative;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 120%;
+    width: 138px;
+    text-align: center;
+    color: #555;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.dbw-cost-calc-field input[type='number']::-webkit-inner-spin-button {
+    position: absolute;
+    width: 18px;
+    height: 20px;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+}
+
+.dbw-cost-calc-fields-extra .dbw-cost-calc-field label {
+    min-height: 63px;
+}
+
+.dbw-cost-calc-fields-extra .dbw-cost-calc-field input {
+    margin-top: 5px;
+}
+
+.dbw-cost-calc-field .label-title {
+    color: #394494;
+}
+
+.dbw-cost-calc-field .label-desc {
+    font-weight: 300;
+}
+
+.dbw-cost-calc-summary {
+    position: relative;
+    margin-top: 90px;
+}
+
+.dbw-cost-calc-summary:after {
+    content: '';
+    position: absolute;
+    bottom: -490px;
+    right: -150px;
+    display: block;
+    width: 442px;
+    height: 455px;
+    background: url(../img/dbw-bg.png) no-repeat;
+    background-size: contain;
+    z-index: -1;
+}
+
+body .dbw-cost-calc-summary .dbw-cost-calc-title {
+    margin-bottom: 95px;
+}
+
+.dbw-cost-calc-summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 120%;
+    color: #394494;
+    max-width: 490px;
+    min-height: 90px;
+    margin: 16px auto;
+    padding: 28px;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.dbw-cost-calc-summary-item.item-total {
+    font-size: 28px;
+    line-height: 26px;
+}
+
+.dbw-cost-calc-summary-item.item-total span:nth-child(1) {
+    border-bottom: 1px solid #394494;
+}
+
+.dbw-cost-calc-summary-item .summary-item-val {
+    min-width: 75px;
+    color: #555;
+}
+
+.dbw-cost-calc-get-quote-btn {
+    display: none;
+}
+
+button.dbw-cost-calc-btn {
+    display: block;
+    font-family: Montserrat, serif;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 125%;
+    text-align: center;
+    color: #fff;
+    max-width: 352px;
+    width: 100%;
+    margin: auto;
+    padding: 11px;
+    background: #3558C7;
+    border-radius: 4px;
+}
+
+button.dbw-cost-calc-btn:hover {
+    background: #476eea;
+}
+
+.dbw-cost-calc-get-quote {
+    max-width: 490px;
+    margin: 100px auto 20px;
+}
+
+.dbw-cost-calc-get-quote-fields {
+    display: none;
+    margin-top: 128px;
+}
+
+.dbw-cost-calc-get-quote-field label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    margin: 25px 0;
+    gap: 15px;
+}
+
+.dbw-cost-calc-get-quote-field .quote-label {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 122%;
+    color: #394494;
+}
+
+.dbw-cost-calc-get-quote-field .quote-input {
+    max-width: 100%;
+    min-width: 352px;
+}
+
+.dbw-cost-calc-get-quote-field .quote-input input {
+    font-family: Montserrat, serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 120%;
+    border: 1px solid #3558C7;
+    border-radius: 4px;
+    background: #fff;
+    padding: 11px 27px;
+}
+
+.dbw-cost-calc-get-quote-actions {
+    margin-top: 67px;
+}
+
+.dbw-cost-calc-thank-you {
+    display: none;
+    position: relative;
+    text-align: center;
+    border: 1px solid #394494;
+    border-radius: 20px;
+    padding: 36px 20px 60px;
+    margin-top: 128px;
+    margin-bottom: 28px;
+}
+
+.dbw-cost-calc-thank-you-close {
+    position: absolute;
+    top: 23px;
+    right: 35px;
+}
+
+.dbw-cost-calc-thank-you .thank-you-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 122%;
+    color: #394494;
+    text-transform: unset;
+    padding: 0;
+    margin: 11px 0 8px;
+}
+
+.dbw-cost-calc-thank-you .thank-you-content {
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 144%;
+    color: #555;
+}
+
+form[data-step="get-quote"] .dbw-cost-calc-get-quote-btn,
+form[data-step="quote-submit"] .dbw-cost-calc-get-quote-fields,
+form[data-step="thank-you"] .dbw-cost-calc-thank-you {
+    display: block;
+}
+
+.dbw-cost-calc-terms {
+    max-width: 765px;
+    margin: auto;
+    padding-top: 100px;
+}
+
+.dbw-cost-calc-terms-title {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 120%;
+    color: #394494;
+    padding: 33px 72px 33px 63px;
+    border-radius: 16px;
+    background: #DFE5F9;
+}
+
+.dbw-cost-calc-terms-title svg {
+    transition: transform .3s ease;
+    transform: rotate(180deg);
+}
+
+.dbw-cost-calc-terms-title.active {
+    border-radius: 16px 16px 0 0;
+}
+
+.dbw-cost-calc-terms-title svg.active {
+    transform: rotate(0);
+}
+
+.dbw-cost-calc-terms-content {
+    display: none;
+    padding: 42px 25px;
+    background: #fff;
+}
+
+.dbw-cost-calc-terms-content p {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 180%;
+    color: #555555;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 1280px) {
+    .dbw-cost-calc-summary:after {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+
+}

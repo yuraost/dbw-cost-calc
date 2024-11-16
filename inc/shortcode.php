@@ -12,10 +12,14 @@ function dbw_cost_calc_shortcode()
 	// Start output buffering
 	ob_start();
 
+	echo '<div class="dbw-cost-calc-wrapper">';
+
 	// Include the necessary template files
 	include DBW_COST_CALC_PATH . 'templates/head.php';
 	include DBW_COST_CALC_PATH . 'templates/calc.php';
 	include DBW_COST_CALC_PATH . 'templates/terms.php';
+
+	echo '</div>';
 
 	// Return the buffered content
 	return ob_get_clean();

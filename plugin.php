@@ -22,5 +22,8 @@ function dbw_cost_calc_register_assets()
 	wp_register_script('dbw-cost-calc', DBW_COST_CALC_URL . 'assets/js/dbw-cost-calc.js', [], DBW_COST_CALC_VERSION, true);
 }
 
+// Include the wp-admin functionality
+require_once DBW_COST_CALC_PATH . 'inc/admin.php';
+
 // Include the shortcode file
 require_once DBW_COST_CALC_PATH . 'inc/shortcode.php';
