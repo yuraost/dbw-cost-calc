@@ -22,6 +22,14 @@ function dbw_cost_calc_register_assets()
 	wp_register_script('dbw-cost-calc', DBW_COST_CALC_URL . 'assets/js/dbw-cost-calc.js', [], DBW_COST_CALC_VERSION, true);
 }
 
+// Register plugin admin styles and scripts
+add_action('admin_enqueue_scripts', 'dbw_cost_calc_register_admin_assets');
+function dbw_cost_calc_register_admin_assets()
+{
+	wp_register_style('dbw-cost-calc-admin', DBW_COST_CALC_URL . 'assets/css/dbw-cost-calc-admin.css', [], DBW_COST_CALC_VERSION);
+	wp_register_script('dbw-cost-calc-admin', DBW_COST_CALC_URL . 'assets/js/dbw-cost-calc-admin.js', ['jquery'], DBW_COST_CALC_VERSION, true);
+}
+
 // Include the wp-admin functionality
 require_once DBW_COST_CALC_PATH . 'inc/admin.php';
 
