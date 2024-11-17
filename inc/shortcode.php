@@ -1,7 +1,9 @@
 <?php
 defined('ABSPATH') || exit;
 
-// Register the shortcode [dbw-cost-calc] and its callback function
+/**
+ * Register the shortcode [dbw-cost-calc] and its callback function
+ */
 add_shortcode('dbw-cost-calc', 'dbw_cost_calc_shortcode');
 function dbw_cost_calc_shortcode()
 {
