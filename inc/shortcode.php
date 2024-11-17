@@ -45,31 +45,30 @@ function dbw_cost_calc_data()
 		$types['price']
 	);
 
+	// Get addons from the options table
+	$addons = get_option('dbw-cost-calculator-addons');
+	$addons = array_combine(
+		array_map(
+			'sanitize_key',
+			$addons['name']
+		),
+		$addons['price']
+	);
+
 	// Get discount rates from the options table
 	$rates_raw = get_option('dbw-cost-calculator-discount-rates');
 	$rates = [];
 	for ($i = 0; $i < count($rates_raw['min_qty']); $i++) {
 		$rates[] = [
-			'min_qty' => $rates_raw['min_qty'][$i],
+			'minQty' => $rates_raw['min_qty'][$i],
 			'discount' => $rates_raw['discount'][$i]
-		];
-	}
-
-	// Get addons from the options table
-	$addons_raw = get_option('dbw-cost-calculator-addons');
-	$addons = [];
-	for ($i = 0; $i < count($addons_raw['name']); $i++) {
-		$addons[] = [
-			'name' => $addons_raw['name'][$i],
-			'price' => $addons_raw['price'][$i],
-			'platforms' => $addons_raw['platforms'][$i]
 		];
 	}
 
 	// Return the collected data as an array
 	return [
 		'instancePricing' => $types,
-		'discountRates' => $rates,
-		'addOns' => $addons
+		'addonsPricing' => $addons,
+		'discountRates' => $rates
 	];
 }

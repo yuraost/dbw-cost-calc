@@ -34,7 +34,7 @@ defined('ABSPATH') || exit;
                                     <div class="label-desc">($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?></div>
                                 </div>
                                 <div>
-                                    <input type="number" name="addon<?= $i; ?>" value="0" min="0" />
+                                    <input type="number" name="<?= sanitize_key($addons['name'][$i]); ?>" value="0" min="0" />
                                 </div>
                             </label>
                         </div>
@@ -47,23 +47,23 @@ defined('ABSPATH') || exit;
         <h3 class="dbw-cost-calc-title">Summary</h3>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Price before discount</span>
-            <span class="summary-item-val" id="price-before-discount">$0</span>
+            <span class="summary-item-val">$<span id="price-before-discount">0.00</span></span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Discount</span>
-            <span class="summary-item-val" id="discount">$0</span>
+            <span class="summary-item-val">$<span id="discount">0.00</span></span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Yearly price per instance</span>
-            <span class="summary-item-val" id="yearly-price-per-instance">$0</span>
+            <span class="summary-item-val">$<span id="yearly-price-per-instance">0.00</span></span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Total price per month</span>
-            <span class="summary-item-val" id="total-price-per-month">$0</span>
+            <span class="summary-item-val">$<span id="total-price-per-month">0.00</span></span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow item-total">
             <span>Total price per year</span>
-            <span class="summary-item-val" id="total-price-per-year">$0</span>
+            <span class="summary-item-val">$<span id="total-price-per-year">0.00</span></span>
         </div>
 	</div>
     <div class="dbw-cost-calc-get-quote">

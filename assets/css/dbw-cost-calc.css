@@ -145,7 +145,7 @@ body .dbw-cost-calc-summary .dbw-cost-calc-title {
     line-height: 26px;
 }
 
-.dbw-cost-calc-summary-item.item-total span:nth-child(1) {
+.dbw-cost-calc-summary-item.item-total > span:nth-child(1) {
     border-bottom: 1px solid #394494;
 }
 
