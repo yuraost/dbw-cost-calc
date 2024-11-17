@@ -5,7 +5,8 @@ defined('ABSPATH') || exit;
  * Add a new menu item to the admin menu
  */
 add_action('admin_menu', 'dbw_cost_calc_admin_menu');
-function dbw_cost_calc_admin_menu() {
+function dbw_cost_calc_admin_menu()
+{
 	add_menu_page(
 		'dbWatch Control Center License Cost Calculator Settings',
 		'Cost Calculator',
@@ -20,7 +21,8 @@ function dbw_cost_calc_admin_menu() {
 /**
  * Display the admin page for the cost calculator
  */
-function dbw_cost_calc_admin_page() {
+function dbw_cost_calc_admin_page()
+{
 	// Enqueue admin styles and scripts
 	wp_enqueue_style('dbw-cost-calc-admin');
 	wp_enqueue_script('dbw-cost-calc-admin');
@@ -43,7 +45,8 @@ function dbw_cost_calc_admin_page() {
  * Register settings and fields for the cost calculator
  */
 add_action('admin_init',  'dbw_cost_calc_settings_fields' );
-function dbw_cost_calc_settings_fields() {
+function dbw_cost_calc_settings_fields()
+{
 	add_settings_section(
 		'dbw-cost-calculator-section',
 		'',
@@ -82,7 +85,8 @@ function dbw_cost_calc_settings_fields() {
 /**
  * Display the instance types settings field
  */
-function dbw_cost_calc_settings_field_instance_types() {
+function dbw_cost_calc_settings_field_instance_types()
+{
     $types_raw = get_option('dbw-cost-calculator-instance-types');
 	$types = [];
 	if (!empty($types_raw['name']) && is_array($types_raw['name']) &&
@@ -133,7 +137,8 @@ function dbw_cost_calc_settings_field_instance_types() {
  * @param $types
  * @return false|mixed|void
  */
-function dbw_cost_calc_settings_field_instance_types_sanitize($types) {
+function dbw_cost_calc_settings_field_instance_types_sanitize($types)
+{
 	if (!empty($types['name']) && is_array($types['name']) &&
 		!empty($types['price']) && is_array($types['price']) &&
         count($types['name']) === count($types['price'])
@@ -156,7 +161,8 @@ function dbw_cost_calc_settings_field_instance_types_sanitize($types) {
 /**
  * Display the discount rates settings field
  */
-function dbw_cost_calc_settings_field_discount_rates() {
+function dbw_cost_calc_settings_field_discount_rates()
+{
 	$rates_raw = get_option('dbw-cost-calculator-discount-rates');
 	$rates = [];
     if (!empty($rates_raw['min_qty']) && is_array($rates_raw['min_qty']) &&
@@ -202,7 +208,8 @@ function dbw_cost_calc_settings_field_discount_rates() {
  * @param $rates
  * @return array|mixed
  */
-function dbw_cost_calc_settings_field_discount_rates_sanitize($rates) {
+function dbw_cost_calc_settings_field_discount_rates_sanitize($rates)
+{
 	if (!empty($rates['min_qty']) && is_array($rates['min_qty']) &&
 		!empty($rates['discount']) && is_array($rates['discount']) &&
 		count($rates['min_qty']) === count($rates['discount'])
@@ -219,7 +226,8 @@ function dbw_cost_calc_settings_field_discount_rates_sanitize($rates) {
 /**
  * Display the addons settings field
  */
-function dbw_cost_calc_settings_field_addons() {
+function dbw_cost_calc_settings_field_addons()
+{
 	$addons_raw = get_option('dbw-cost-calculator-addons');
 	$addons = [];
 	if (!empty($addons_raw['name']) && is_array($addons_raw['name']) &&
@@ -270,7 +278,8 @@ function dbw_cost_calc_settings_field_addons() {
  * @param $addons
  * @return array|mixed
  */
-function dbw_cost_calc_settings_field_addons_sanitize($addons) {
+function dbw_cost_calc_settings_field_addons_sanitize($addons)
+{
 	if (!empty($addons['name']) && is_array($addons['name']) &&
 		!empty($addons['price']) && is_array($addons['price']) &&
 		!empty($addons['platforms']) && is_array($addons['platforms']) &&
@@ -291,7 +300,8 @@ function dbw_cost_calc_settings_field_addons_sanitize($addons) {
  * Add a notice to the admin area
  */
 add_action('admin_notices', 'dbw_cost_calculator_notices');
-function dbw_cost_calculator_notices() {
+function dbw_cost_calculator_notices()
+{
 	// Get any settings errors registered during the settings save
 	$settings_errors = get_settings_errors( 'dbw-cost-calculator-settings-errors' );
 

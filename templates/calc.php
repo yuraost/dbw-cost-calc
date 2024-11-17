@@ -6,103 +6,40 @@ defined('ABSPATH') || exit;
 		<div class="dbw-cost-calc-fields-col dbw-cost-calc-shadow">
             <h2 class="dbw-cost-calc-fields-col-title">Instance Types</h2>
             <div class="dbw-cost-calc-fields-types">
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <span>Oracle</span>
-                        <div>
-                            <input type="number" name="oracle" value="0" min="0" />
+                <?php
+                    $types = get_option('dbw-cost-calculator-instance-types');
+                    for ($i = 0; $i < count($types['name']); $i++) { ?>
+                        <div class="dbw-cost-calc-field">
+                            <label>
+                                <span><?= $types['name'][$i]; ?></span>
+                                <div>
+                                    <input type="number" name="<?= sanitize_key($types['name'][$i]); ?>" value="0" min="0" />
+                                </div>
+                            </label>
                         </div>
-                    </label>
-                </div>
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <span>MS SQL Server</span>
-                        <div>
-                            <input type="number" name="msSQL" value="0" min="0" />
-                        </div>
-                    </label>
-                </div>
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <span>MySQL</span>
-                        <div>
-                            <input type="number" name="mysql" value="0" min="0" />
-                        </div>
-                    </label>
-                </div>
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <span>PostgreSQL</span>
-                        <div>
-                            <input type="number" name="postgres" value="0" min="0" />
-                        </div>
-                    </label>
-                </div>
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <span>MariaDB</span>
-                        <div>
-                            <input type="number" name="mariaDB" value="0" min="0" />
-                        </div>
-                    </label>
-                </div>
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <span>Sybase</span>
-                        <div>
-                            <input type="number" name="sybase" value="0" min="0" />
-                        </div>
-                    </label>
-                </div>
+                    <?php }
+                ?>
             </div>
 		</div>
 		<div class="dbw-cost-calc-fields-col dbw-cost-calc-shadow">
             <h2 class="dbw-cost-calc-fields-col-title">Extra Cost Add-ons</h2>
             <div class="dbw-cost-calc-fields-extra">
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <div>
-                            <div class="label-title">SQL Performance package</div>
-                            <div class="label-desc">($120) for Oracle, MSSQL, MySQL, PostgreSQL, MariaDB</div>
+                <?php
+                    $addons = get_option('dbw-cost-calculator-addons');
+                    for ($i = 0; $i < count($addons['name']); $i++) { ?>
+                        <div class="dbw-cost-calc-field">
+                            <label>
+                                <div>
+                                    <div class="label-title"><?= $addons['name'][$i]; ?></div>
+                                    <div class="label-desc">($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?></div>
+                                </div>
+                                <div>
+                                    <input type="number" name="addon<?= $i; ?>" value="0" min="0" />
+                                </div>
+                            </label>
                         </div>
-                        <div>
-                            <input type="number" name="addon0" value="0" min="0" />
-                        </div>
-                    </label>
-                </div>
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <div>
-                            <div class="label-title">Maintenance package</div>
-                            <div class="label-desc">($120) for MSSQL</div>
-                        </div>
-                        <div>
-                            <input type="number" name="addon1" value="0" min="0" />
-                        </div>
-                    </label>
-                </div>
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <div>
-                            <div class="label-title">Security and Compliance package </div>
-                            <div class="label-desc">($120) for MSSQL</div>
-                        </div>
-                        <div>
-                            <input type="number" name="addon2" value="0" min="0" />
-                        </div>
-                    </label>
-                </div>
-                <div class="dbw-cost-calc-field">
-                    <label>
-                        <div>
-                            <div class="label-title">Cloud Router</div>
-                            <div class="label-desc">($5000) for ControlCenter</div>
-                        </div>
-                        <div>
-                            <input type="number" name="addon3" value="0" min="0" />
-                        </div>
-                    </label>
-                </div>
+                    <?php }
+                ?>
             </div>
 		</div>
 	</div>
