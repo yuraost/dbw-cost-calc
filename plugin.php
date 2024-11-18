@@ -35,3 +35,6 @@ require_once DBW_COST_CALC_PATH . 'inc/admin.php';
 
 // Include the shortcode file
 require_once DBW_COST_CALC_PATH . 'inc/shortcode.php';
+
+// Include the AJAX handlers
+require_once DBW_COST_CALC_PATH . 'inc/ajax.php';
