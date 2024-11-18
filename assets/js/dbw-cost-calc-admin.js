@@ -48,6 +48,21 @@ jQuery(document).ready(function($) {
         return false;
     });
 
+    // Event handler for adding a new recipient row
+    $(document).on('click', '#add-recipient', function(e) {
+        e.preventDefault();
+
+        // Append a new row to the recipients list
+        $('#recipients-list').append(
+            '<tr>' +
+                '<td><input type="email" name="dbw-cost-calculator-recipients[]" value="" required /></td>' +
+                '<td><a class="button button-secondary remove-recipient" href="#">Remove</a></td>' +
+            '</tr>'
+        );
+
+        return false;
+    });
+
     // Function to remove a row, with an option to prevent removing the last row
     function removeRow($row, deleteLast) {
         if (deleteLast || $row.siblings().length > 0) {
@@ -57,8 +72,8 @@ jQuery(document).ready(function($) {
         }
     }
 
-    // Event handler for removing an instance type row
-    $(document).on('click', '.remove-instance-type', function(e) {
+    // Event handler for removing instance type or recipient row
+    $(document).on('click', '.remove-instance-type, .remove-recipient', function(e) {
         e.preventDefault();
         removeRow($(this).closest('tr'), false);
         return false;

@@ -80,6 +80,15 @@ function dbw_cost_calc_settings_fields()
 		'dbw-cost-calculator',
 		'dbw-cost-calculator-section'
 	);
+
+	register_setting('dbw-cost-calculator-group', 'dbw-cost-calculator-recipients', 'dbw_cost_calc_settings_field_recipients_sanitize');
+	add_settings_field(
+		'dbw-cost-calculator-recipients',
+		'Recipients',
+		'dbw_cost_calc_settings_field_recipients',
+		'dbw-cost-calculator',
+		'dbw-cost-calculator-section'
+	);
 }
 
 /**
@@ -294,6 +303,62 @@ function dbw_cost_calc_settings_field_addons_sanitize($addons)
 	}
 
 	return $addons;
+}
+
+/**
+ * Display the recipients settings field
+ */
+function dbw_cost_calc_settings_field_recipients()
+{
+	$recipients = get_option('dbw-cost-calculator-recipients');
+    if (empty($recipients) || !is_array($recipients)) {
+	    $recipients = [''];
+    } ?>
+    <table class="dbw-cost-calc-settings-table">
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="recipients-list">
+		<?php foreach ($recipients as $recipient) { ?>
+            <tr>
+                <td><input type="email" name="dbw-cost-calculator-recipients[]" value="<?= esc_attr($recipient); ?>" required /></td>
+                <td><a class="button button-secondary remove-recipient" href="#">Remove</a></td>
+            </tr>
+		<?php } ?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2"><a id="add-recipient" class="button button-primary" href="#">Add Recipient</a></td>
+        </tr>
+        </tfoot>
+    </table>
+	<?php
+}
+
+/**
+ * Sanitize the recipients settings field
+ *
+ * @param $recipients
+ * @return false|mixed|void
+ */
+function dbw_cost_calc_settings_field_recipients_sanitize($recipients)
+{
+	if (!empty($recipients)) {
+		$recipients = array_map('sanitize_email', $recipients);
+	} else {
+		add_settings_error(
+			'dbw-cost-calculator-settings-errors',
+			'empty-value',
+			'Recipients can\'t be empty.',
+			'error'
+		);
+		$recipients = get_option('dbw-cost-calculator-recipients');
+	}
+
+	return $recipients;
 }
 
 /**

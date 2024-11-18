@@ -17,13 +17,7 @@ function dbw_cost_calc_get_quote() {
 		]);
 	}
 
-	// Sanitize and validate the email address
-	$to = sanitize_email($_POST['email']);
-	if (empty($to)) {
-		wp_send_json_error([
-			'message' => 'Email is empty.'
-		]);
-	}
+	$to = get_option('dbw-cost-calculator-recipients');
 
 	$subject = 'Quote from dbWatch';
 
