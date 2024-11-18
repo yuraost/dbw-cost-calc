@@ -15,6 +15,11 @@ body .dbw-cost-calc-title {
     text-align: center;
 }
 
+.dbw-cost-calc-form.processing,
+.dbw-cost-calc-form.processing * {
+    cursor: wait;
+}
+
 .dbw-cost-calc-fields {
     display: flex;
     justify-content: space-between;
@@ -128,6 +133,7 @@ body .dbw-cost-calc-summary .dbw-cost-calc-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     font-size: 20px;
     font-weight: 700;
     line-height: 120%;
@@ -174,7 +180,8 @@ button.dbw-cost-calc-btn {
     border-radius: 4px;
 }
 
-button.dbw-cost-calc-btn:hover {
+button.dbw-cost-calc-btn:hover,
+button.dbw-cost-calc-btn[disabled="disabled"] {
     background: #476eea;
 }
 
@@ -258,6 +265,20 @@ button.dbw-cost-calc-btn:hover {
     color: #555;
 }
 
+.dbw-cost-calc-messages {
+    margin: 10px 0;
+    text-align: center;
+    font-weight: 600;
+}
+
+.dbw-cost-calc-messages .error {
+    color: red;
+}
+
+.dbw-cost-calc-messages .success {
+    color: green;
+}
+
 form[data-step="get-quote"] .dbw-cost-calc-get-quote-btn,
 form[data-step="quote-submit"] .dbw-cost-calc-get-quote-fields,
 form[data-step="thank-you"] .dbw-cost-calc-thank-you {
@@ -267,7 +288,7 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 .dbw-cost-calc-terms {
     max-width: 765px;
     margin: auto;
-    padding-top: 100px;
+    padding-top: 73px;
 }
 
 .dbw-cost-calc-terms-title {

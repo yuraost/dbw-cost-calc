@@ -3,6 +3,7 @@ jQuery(document).ready(function($){
     const $calcFieldsTypes = $form.find('.dbw-cost-calc-fields-types input[type="number"]');
     const $calcFieldsAddons = $form.find('.dbw-cost-calc-fields-extra input[type="number"]');
     const $quoteBtn = $('#get-quote-btn');
+    const $messages = $('#form-messages')
     const $thankYouCloseBtn = $('#thank-you-close');
     const $termsToggle = $('.dbw-cost-calc-terms-title');
 
@@ -13,14 +14,14 @@ jQuery(document).ready(function($){
         $calcFieldsTypes.each(function() {
             const val = parseInt($(this).val(), 10);
             if (val <= 0) return;
-            priceBeforeDiscount += val * dbwCostCalcData.instancePricing[$(this).attr('name')];
+            priceBeforeDiscount += val * dbwCostCalcData.instances[$(this).attr('name')].price;
             totalInstanceQuantity += val;
         });
 
         $calcFieldsAddons.each(function() {
             const val = parseInt($(this).val(), 10);
             if (val <= 0) return;
-            priceBeforeDiscount += val * dbwCostCalcData.addonsPricing[$(this).attr('name')];
+            priceBeforeDiscount += val * dbwCostCalcData.addons[$(this).attr('name')].price;
         });
 
         let discount = 0;
@@ -35,11 +36,15 @@ jQuery(document).ready(function($){
         const totalPricePerInstance = totalInstanceQuantity > 0 ? priceAfterDiscount / totalInstanceQuantity : 0;
         const totalPricePerMonth = priceAfterDiscount / 12;
 
-        $('#price-before-discount').text(priceBeforeDiscount.toFixed(2));
-        $('#discount').text(discountAmount.toFixed(2));
-        $('#yearly-price-per-instance').text(totalPricePerInstance.toFixed(2));
-        $('#total-price-per-month').text(totalPricePerMonth.toFixed(2));
-        $('#total-price-per-year').text(priceAfterDiscount.toFixed(2));
+        const USDollar = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        });
+        $('#price-before-discount').text(USDollar.format(priceBeforeDiscount));
+        $('#discount-amount').text(USDollar.format(discountAmount));
+        $('#total-price-per-instance').text(USDollar.format(totalPricePerInstance));
+        $('#total-price-per-month').text(USDollar.format(totalPricePerMonth));
+        $('#price-after-discount').text(USDollar.format(priceAfterDiscount));
     });
 
     $quoteBtn.on('click', function(e) {
@@ -51,14 +56,74 @@ jQuery(document).ready(function($){
     $form.on('submit', function(e) {
         e.preventDefault();
 
-        $form.attr('data-step', 'thank-you');
+        if ($form.hasClass('processing')) return false;
+        $form.addClass('processing');
+
+        $messages.html('&nbsp;');
+
+        const $inputs = $form.find('input, button');
+        $inputs.attr('disabled', 'disabled');
+
+        const instances = [];
+        $calcFieldsTypes.each(function() {
+            const val = parseInt($(this).val(), 10);
+            if (val <= 0) return;
+            instances.push({
+                'name': dbwCostCalcData.instances[$(this).attr('name')].name,
+                'qty': val
+            });
+        });
+        if (instances.length === 0) {
+            $messages.html('<span class="error">Add at least one instance to get quota.</span>');
+            $form.removeClass('processing');
+            $inputs.removeAttr('disabled');
+            return false;
+        }
+
+        const addons = [];
+        $calcFieldsAddons.each(function() {
+            const val = parseInt($(this).val(), 10);
+            if (val <= 0) return;
+            addons.push({
+                'name': dbwCostCalcData.addons[$(this).attr('name')].name,
+                'qty': val
+            });
+        });
+
+        $.post(dbwCostCalcData.ajax.url, {
+            action: 'dbwCostCalcGetQuote',
+            nonce: dbwCostCalcData.ajax.nonce,
+            instances: instances,
+            addons: addons,
+            priceBeforeDiscount: $('#price-before-discount').text(),
+            discountAmount: $('#discount-amount').text(),
+            totalPricePerInstance: $('#total-price-per-instance').text(),
+            totalPricePerMonth: $('#total-price-per-month').text(),
+            priceAfterDiscount: $('#price-after-discount').text(),
+            email: $form.find('input[name="email"]').val(),
+            name: $form.find('input[name="name"]').val(),
+            company: $form.find('input[name="company"]').val()
+        }, function(response) {
+            if (response.success) {
+                $form.attr('data-step', 'thank-you');
+            } else {
+                const msg = response.hasOwnProperty('data') ? response.data.message : 'An unexpected error has occurred. Please reload the page and try again.';
+                $messages.html('<span class="error">' + msg + '</span>');
+            }
+        })
+        .fail(function() {
+            $messages.html('<span class="error">An unexpected error has occurred. Please reload the page and try again.</span>');
+        })
+        .always(function() {
+            $form.removeClass('processing');
+            $inputs.removeAttr('disabled');
+        });
+
         return false;
     });
 
     $thankYouCloseBtn.on('click', function(e) {
         e.preventDefault();
-        // todo reset calc
-        // todo empty fields
         $form.attr('data-step', 'get-quote');
         return false;
     });
