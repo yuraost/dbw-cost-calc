@@ -58,7 +58,7 @@ function dbw_cost_calc_get_quote() {
 
 	// Set the email headers
 	$headers = [
-		'From: dbWatch Cost Calculator',
+		'From: dbWatch Cost Calculator <noreply@dbwatch.com>',
 		'Content-type: text/html; charset=utf-8'
 	];
 
@@ -67,7 +67,7 @@ function dbw_cost_calc_get_quote() {
 		wp_send_json_success();
 	} else {
 		wp_send_json_error([
-			'message' => 'An error occurred while sending the quota.'
+			'message' => 'An error occurred while executing the request.'
 		]);
 	}
 }
