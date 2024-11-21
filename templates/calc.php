@@ -8,16 +8,18 @@ defined('ABSPATH') || exit;
             <div class="dbw-cost-calc-fields-types">
                 <?php
                     $types = get_option('dbw-cost-calculator-instance-types');
-                    for ($i = 0; $i < count($types['name']); $i++) { ?>
-                        <div class="dbw-cost-calc-field">
-                            <label>
-                                <span><?= $types['name'][$i]; ?></span>
-                                <div>
-                                    <input type="number" name="<?= sanitize_key($types['name'][$i]); ?>" value="0" min="0" max="10000" />
-                                </div>
-                            </label>
-                        </div>
-                    <?php }
+                    if (is_array($types)) {
+                        for ($i = 0; $i < count($types['name']); $i++) { ?>
+                            <div class="dbw-cost-calc-field">
+                                <label>
+                                    <span><?= $types['name'][$i]; ?></span>
+                                    <div>
+                                        <input type="number" name="<?= sanitize_key($types['name'][$i]); ?>" value="0" min="0" max="10000" />
+                                    </div>
+                                </label>
+                            </div>
+                        <?php }
+                    }
                 ?>
             </div>
 		</div>
@@ -26,19 +28,21 @@ defined('ABSPATH') || exit;
             <div class="dbw-cost-calc-fields-extra">
                 <?php
                     $addons = get_option('dbw-cost-calculator-addons');
-                    for ($i = 0; $i < count($addons['name']); $i++) { ?>
-                        <div class="dbw-cost-calc-field">
-                            <label>
-                                <div>
-                                    <div class="label-title"><?= $addons['name'][$i]; ?></div>
-                                    <div class="label-desc">($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?></div>
-                                </div>
-                                <div>
-                                    <input type="number" name="<?= sanitize_key($addons['name'][$i]); ?>" value="0" min="0" max="10000" />
-                                </div>
-                            </label>
-                        </div>
-                    <?php }
+                    if (is_array($addons)) {
+                        for ($i = 0; $i < count($addons['name']); $i++) { ?>
+                            <div class="dbw-cost-calc-field">
+                                <label>
+                                    <div>
+                                        <div class="label-title"><?= $addons['name'][$i]; ?></div>
+                                        <div class="label-desc">($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?></div>
+                                    </div>
+                                    <div>
+                                        <input type="number" name="<?= sanitize_key($addons['name'][$i]); ?>" value="0" min="0" max="10000" />
+                                    </div>
+                                </label>
+                            </div>
+                        <?php }
+                    }
                 ?>
             </div>
 		</div>

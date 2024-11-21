@@ -38,31 +38,37 @@ function dbw_cost_calc_data()
 	// Get instance types from the options table
 	$types_raw = get_option('dbw-cost-calculator-instance-types');
 	$instances = [];
-	for ($i = 0; $i < count($types_raw['name']); $i++) {
-		$instances[sanitize_key($types_raw['name'][$i])] = [
-			'name' => $types_raw['name'][$i],
-			'price' => $types_raw['price'][$i]
-		];
+	if (is_array($types_raw)) {
+		for ($i = 0; $i < count($types_raw['name']); $i++) {
+			$instances[sanitize_key($types_raw['name'][$i])] = [
+				'name' => $types_raw['name'][$i],
+				'price' => $types_raw['price'][$i]
+			];
+		}
 	}
 
 	// Get addons from the options table
 	$addons_raw = get_option('dbw-cost-calculator-addons');
 	$addons = [];
-	for ($i = 0; $i < count($addons_raw['name']); $i++) {
-		$addons[sanitize_key($addons_raw['name'][$i])] = [
-			'name' => $addons_raw['name'][$i],
-			'price' => $addons_raw['price'][$i]
-		];
+	if (is_array($addons_raw)) {
+		for ($i = 0; $i < count($addons_raw['name']); $i++) {
+			$addons[sanitize_key($addons_raw['name'][$i])] = [
+				'name' => $addons_raw['name'][$i],
+				'price' => $addons_raw['price'][$i]
+			];
+		}
 	}
 
 	// Get discount rates from the options table
 	$rates_raw = get_option('dbw-cost-calculator-discount-rates');
 	$rates = [];
-	for ($i = 0; $i < count($rates_raw['min_qty']); $i++) {
-		$rates[] = [
-			'minQty' => $rates_raw['min_qty'][$i],
-			'discount' => $rates_raw['discount'][$i]
-		];
+	if (is_array($rates_raw)) {
+		for ($i = 0; $i < count($rates_raw['min_qty']); $i++) {
+			$rates[] = [
+				'minQty' => $rates_raw['min_qty'][$i],
+				'discount' => $rates_raw['discount'][$i]
+			];
+		}
 	}
 
 	// Return the collected data as an array
