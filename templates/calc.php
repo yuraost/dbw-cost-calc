@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
                             <label>
                                 <span><?= $types['name'][$i]; ?></span>
                                 <div>
-                                    <input type="number" name="<?= sanitize_key($types['name'][$i]); ?>" value="0" min="0" max="999" />
+                                    <input type="number" name="<?= sanitize_key($types['name'][$i]); ?>" value="0" min="0" max="10000" />
                                 </div>
                             </label>
                         </div>
@@ -34,7 +34,7 @@ defined('ABSPATH') || exit;
                                     <div class="label-desc">($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?></div>
                                 </div>
                                 <div>
-                                    <input type="number" name="<?= sanitize_key($addons['name'][$i]); ?>" value="0" min="0" max="999" />
+                                    <input type="number" name="<?= sanitize_key($addons['name'][$i]); ?>" value="0" min="0" max="10000" />
                                 </div>
                             </label>
                         </div>
@@ -102,7 +102,7 @@ defined('ABSPATH') || exit;
                 </label>
             </div>
             <div class="dbw-cost-calc-get-quote-actions">
-                <button class="dbw-cost-calc-btn">Submit</button>
+                <button class="dbw-cost-calc-btn">Request a quote</button>
             </div>
         </div>
         <div class="dbw-cost-calc-thank-you">
@@ -115,7 +115,7 @@ defined('ABSPATH') || exit;
                 <path d="M1 9L4.233 11.425C4.43936 11.5797 4.69752 11.6487 4.95356 11.6176C5.2096 11.5865 5.44372 11.4577 5.607 11.258L14 1" stroke="#394494" stroke-width="2" stroke-linecap="round"/>
             </svg>
             <h4 class="thank-you-title">Thank you!</h4>
-            <p class="thank-you-content">The form successfully submitted</p>
+            <p class="thank-you-content">We will send you a quote shortly</p>
         </div>
         <div class="dbw-cost-calc-messages" id="form-messages">&nbsp;</div>
     </div>

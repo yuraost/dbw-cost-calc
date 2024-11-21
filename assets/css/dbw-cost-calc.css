@@ -3,10 +3,10 @@ body {
 }
 
 .dbw-cost-calc-wrapper {
-    max-width: 1310px;
+    max-width: 1270px;
     margin: auto;
     overflow: visible;
-    padding: 22px 29px;
+    padding: 22px 10px;
 }
 
 body .dbw-cost-calc-title {
@@ -133,12 +133,13 @@ body .dbw-cost-calc-summary .dbw-cost-calc-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     font-size: 20px;
     font-weight: 700;
     line-height: 120%;
     color: #394494;
-    max-width: 490px;
+    max-width: 590px;
     min-height: 90px;
     margin: 16px auto;
     padding: 28px;
@@ -156,7 +157,9 @@ body .dbw-cost-calc-summary .dbw-cost-calc-title {
 }
 
 .dbw-cost-calc-summary-item .summary-item-val {
-    min-width: 75px;
+    flex-grow: 1;
+    width: auto;
+    text-align: right;
     color: #555;
 }
 
@@ -399,10 +402,6 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
         min-height: 55px;
         padding: 19px;
         margin: 10px auto;
-    }
-
-    .dbw-cost-calc-summary-item .summary-item-val {
-        min-width: 45px;
     }
 
     .dbw-cost-calc-summary-item.item-total {
