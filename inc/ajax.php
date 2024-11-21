@@ -26,11 +26,11 @@ function dbw_cost_calc_get_quote() {
 	$json_data = [
 		'instances' => [],
 		'addons' => [],
-		'totalPricePerYear' => sanitize_text_field($_POST['priceAfterDiscount']),
-        'priceBeforeDiscount' => sanitize_text_field($_POST['priceBeforeDiscount']),
-        'discountAmount' => sanitize_text_field($_POST['discountAmount']),
-        'yearlyPricePerInstance' => sanitize_text_field($_POST['totalPricePerInstance']),
-        'totalPricePerMonth' => sanitize_text_field($_POST['totalPricePerMonth']),
+		'totalPricePerYear' => dbw_cost_calc_format_price_for_json($_POST['priceAfterDiscount']),
+        'priceBeforeDiscount' => dbw_cost_calc_format_price_for_json($_POST['priceBeforeDiscount']),
+        'discountAmount' => dbw_cost_calc_format_price_for_json($_POST['discountAmount']),
+        'yearlyPricePerInstance' => dbw_cost_calc_format_price_for_json($_POST['totalPricePerInstance']),
+        'totalPricePerMonth' => dbw_cost_calc_format_price_for_json($_POST['totalPricePerMonth']),
 		'userInformation' => [
 			'email' => sanitize_text_field($_POST['email']),
 			'name' => sanitize_text_field($_POST['name']),
@@ -95,4 +95,19 @@ function dbw_cost_calc_get_quote() {
 			'error' => 'The wp_mail function returned false.'
 		]);
 	}
+}
+
+/**
+ * Formats a price for JSON output.
+ *
+ * This function sanitizes the input price, removes any dollar signs
+ * and commas, and converts the sanitized string to a floating-point number.
+ *
+ * @param string $price The price to be formatted.
+ * @return float The formatted price as a float.
+ */
+function dbw_cost_calc_format_price_for_json($price) {
+	$price = sanitize_text_field($price);
+	$price = str_replace(['$', ','], '', $price);
+	return floatval($price);
 }
