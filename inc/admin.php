@@ -90,7 +90,7 @@ function dbw_cost_calc_settings_fields()
 		'dbw-cost-calculator-section'
 	);
 
-	register_setting('dbw-cost-calculator-group', 'dbw-cost-calculator-terms', 'dbw_cost_calc_settings_field_terms_sanitize');
+	register_setting('dbw-cost-calculator-group', 'dbw-cost-calculator-terms', 'sanitize_textarea_field');
 	add_settings_field(
 		'dbw-cost-calculator-terms',
 		'Usage and Subscription Terms',
@@ -392,17 +392,6 @@ function dbw_cost_calc_settings_field_terms()
         </tbody>
     </table>
 	<?php
-}
-
-/**
- * Sanitize the usage and subscription terms settings field
- *
- * @param $terms
- * @return string
- */
-function dbw_cost_calc_settings_field_terms_sanitize($terms)
-{
-	return sanitize_textarea_field($terms);
 }
 
 /**
