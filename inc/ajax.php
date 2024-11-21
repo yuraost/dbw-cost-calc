@@ -26,11 +26,11 @@ function dbw_cost_calc_get_quote() {
 	$json_data = [
 		'instances' => [],
 		'addons' => [],
+		'priceBeforeDiscount' => dbw_cost_calc_format_price_for_json($_POST['priceBeforeDiscount']),
+		'discount' => dbw_cost_calc_format_price_for_json($_POST['discountAmount']),
+		'yearlyPricePerInstance' => dbw_cost_calc_format_price_for_json($_POST['totalPricePerInstance']),
+		'totalPricePerMonth' => dbw_cost_calc_format_price_for_json($_POST['totalPricePerMonth']),
 		'totalPricePerYear' => dbw_cost_calc_format_price_for_json($_POST['priceAfterDiscount']),
-        'priceBeforeDiscount' => dbw_cost_calc_format_price_for_json($_POST['priceBeforeDiscount']),
-        'discountAmount' => dbw_cost_calc_format_price_for_json($_POST['discountAmount']),
-        'yearlyPricePerInstance' => dbw_cost_calc_format_price_for_json($_POST['totalPricePerInstance']),
-        'totalPricePerMonth' => dbw_cost_calc_format_price_for_json($_POST['totalPricePerMonth']),
 		'userInformation' => [
 			'email' => sanitize_text_field($_POST['email']),
 			'name' => sanitize_text_field($_POST['name']),
@@ -66,10 +66,10 @@ function dbw_cost_calc_get_quote() {
 	// Add price information to the email
 	$message .= '<tr><th colspan="2">Price information</th></tr>';
 	$message .= '<tr><td>Price before discount</td><td>' . esc_html($_POST['priceBeforeDiscount']) . '</td></tr>';
-	$message .= '<tr><td>Discount amount</td><td>' . esc_html($_POST['discountAmount']) . '</td></tr>';
-	$message .= '<tr><td>Total price per instance</td><td>' . esc_html($_POST['totalPricePerInstance']) . '</td></tr>';
+	$message .= '<tr><td>Discount</td><td>' . esc_html($_POST['discountAmount']) . '</td></tr>';
+	$message .= '<tr><td>Yearly price per instance</td><td>' . esc_html($_POST['totalPricePerInstance']) . '</td></tr>';
 	$message .= '<tr><td>Total price per month</td><td>' . esc_html($_POST['totalPricePerMonth']) . '</td></tr>';
-	$message .= '<tr><td>Price after discount</td><td>' . esc_html($_POST['priceAfterDiscount']) . '</td></tr>';
+	$message .= '<tr><td>Total price per year</td><td>' . esc_html($_POST['priceAfterDiscount']) . '</td></tr>';
 	$message .= '<tr><th colspan="2">User information</th></tr>';
 
 	// Add user information to the email
