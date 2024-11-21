@@ -22,23 +22,44 @@ function dbw_cost_calc_get_quote() {
 
 	$subject = 'Quote from dbWatch';
 
-	// Start building the email message with basic styling
-	$message = '<style>table{width: 100%}</style>';
-	$message .= '<table>';
+	// Start building the email message
+	$json_data = [
+		'instances' => [],
+		'addons' => [],
+		'totalPricePerYear' => sanitize_text_field($_POST['priceAfterDiscount']),
+        'priceBeforeDiscount' => sanitize_text_field($_POST['priceBeforeDiscount']),
+        'discountAmount' => sanitize_text_field($_POST['discountAmount']),
+        'yearlyPricePerInstance' => sanitize_text_field($_POST['totalPricePerInstance']),
+        'totalPricePerMonth' => sanitize_text_field($_POST['totalPricePerMonth']),
+		'userInformation' => [
+			'email' => sanitize_text_field($_POST['email']),
+			'name' => sanitize_text_field($_POST['name']),
+			'companyName' => sanitize_text_field($_POST['company'])
+		]
+	];
+	$message = '<table style="width:100%">';
 
 	// Add instances information to the email if available
 	if (!empty($_POST['instances'])) {
 		$message .= '<tr><th colspan="2">Instances</th></tr>';
 		foreach ($_POST['instances'] as $instance) {
-			$message .= sprintf('<tr><td>%s</td><td>%s</td></tr>', esc_html($instance['name']), esc_html($instance['qty']));
+			$json_data['instances'][] = [
+				'name' => sanitize_text_field($instance['name']),
+				'quantity' => intval($instance['qty'])
+			];
+			$message .= sprintf('<tr><td>%s</td><td>%s</td></tr>', esc_html($instance['name']), intval($instance['qty']));
 		}
 	}
 
 	// Add addons information to the email if available
 	if (!empty($_POST['addons'])) {
 		$message .= '<tr><th colspan="2">Addons</th></tr>';
-		foreach ($_POST['addons'] as $addons) {
-			$message .= sprintf('<tr><td>%s</td><td>%s</td></tr>', esc_html($addons['name']), esc_html($addons['qty']));
+		foreach ($_POST['addons'] as $addon) {
+			$json_data['addons'][] = [
+				'name' => sanitize_text_field($addon['name']),
+				'quantity' => intval($addon['qty'])
+			];
+			$message .= sprintf('<tr><td>%s</td><td>%s</td></tr>', esc_html($addon['name']), intval($addon['qty']));
 		}
 	}
 
@@ -52,10 +73,12 @@ function dbw_cost_calc_get_quote() {
 	$message .= '<tr><th colspan="2">User information</th></tr>';
 
 	// Add user information to the email
-	$message .= '<tr><td>Email</td><td>' . esc_html ($_POST['email']) . '</td></tr>';
+	$message .= '<tr><td>Email</td><td>' . esc_html($_POST['email']) . '</td></tr>';
 	$message .= '<tr><td>Name</td><td>' . esc_html($_POST['name']) . '</td></tr>';
 	$message .= '<tr><td>Company name</td><td>' . esc_html($_POST['company']) . '</td></tr>';
 	$message .= '</table>';
+
+	$message = '---BEGIN JSON---' . json_encode($json_data) . '---END JSON---' . PHP_EOL . $message;
 
 	// Set the email headers
 	$headers = [
