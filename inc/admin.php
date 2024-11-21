@@ -89,6 +89,15 @@ function dbw_cost_calc_settings_fields()
 		'dbw-cost-calculator',
 		'dbw-cost-calculator-section'
 	);
+
+	register_setting('dbw-cost-calculator-group', 'dbw-cost-calculator-terms', 'dbw_cost_calc_settings_field_terms_sanitize');
+	add_settings_field(
+		'dbw-cost-calculator-terms',
+		'Usage and Subscription Terms',
+		'dbw_cost_calc_settings_field_terms',
+		'dbw-cost-calculator',
+		'dbw-cost-calculator-section'
+	);
 }
 
 /**
@@ -359,6 +368,41 @@ function dbw_cost_calc_settings_field_recipients_sanitize($recipients)
 	}
 
 	return $recipients;
+}
+
+/**
+ * Display the usage and subscription terms settings field
+ */
+function dbw_cost_calc_settings_field_terms()
+{
+	$terms = get_option('dbw-cost-calculator-terms');
+	?>
+    <table class="dbw-cost-calc-settings-table">
+        <thead>
+        <tr>
+            <th>Content</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <textarea name="dbw-cost-calculator-terms" cols="90" rows="15"><?= esc_textarea($terms); ?></textarea>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+	<?php
+}
+
+/**
+ * Sanitize the usage and subscription terms settings field
+ *
+ * @param $terms
+ * @return string
+ */
+function dbw_cost_calc_settings_field_terms_sanitize($terms)
+{
+	return sanitize_textarea_field($terms);
 }
 
 /**
