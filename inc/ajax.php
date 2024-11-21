@@ -13,7 +13,8 @@ function dbw_cost_calc_get_quote() {
 	// Verify the nonce to ensure the request is valid and secure
 	if (!wp_verify_nonce($_POST['nonce'], 'dbw-cost-calculator')) {
 		wp_send_json_error([
-			'message' => 'An error occurred while executing the request. Please reload the page and try again.'
+			'message' => 'An error occurred while executing the request. Please reload the page and try again.',
+			'error' => 'Failed to verify nonce field.'
 		]);
 	}
 
@@ -67,7 +68,8 @@ function dbw_cost_calc_get_quote() {
 		wp_send_json_success();
 	} else {
 		wp_send_json_error([
-			'message' => 'An error occurred while executing the request.'
+			'message' => 'An error occurred while executing the request.',
+			'error' => 'The wp_mail function returned false.'
 		]);
 	}
 }

@@ -107,12 +107,13 @@ jQuery(document).ready(function($){
             if (response.success) {
                 $form.attr('data-step', 'thank-you');
             } else {
-                const msg = response.hasOwnProperty('data') ? response.data.message : 'An unexpected error has occurred. Please reload the page and try again.';
-                $messages.html('<span class="error">' + msg + '</span>');
+                $messages.html('<span class="error">' + response.data.message + '</span>');
+                console.error(response.data.error);
             }
         })
-        .fail(function() {
+        .fail(function(xhr) {
             $messages.html('<span class="error">An unexpected error has occurred. Please reload the page and try again.</span>');
+            console.error('XHR', xhr);
         })
         .always(function() {
             $form.removeClass('processing');
