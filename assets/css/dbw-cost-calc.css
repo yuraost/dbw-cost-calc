@@ -68,6 +68,26 @@ body .dbw-cost-calc-fields-col-title {
     align-items: center;
 }
 
+.dbw-cost-call-name-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.dbw-cost-call-name-wrap .dbw-cost-call-res-link {
+    font-weight: 400;
+}
+.dbw-cost-call-name-wrap .dbw-cost-call-res-link.external-link:after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgZmlsbD0ibm9uZSIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEwIDZINkM0Ljg5NTQzIDYgNCA2Ljg5NTQzIDQgOFYxOEM0IDE5LjEwNDYgNC44OTU0MyAyMCA2IDIwSDE2QzE3LjEwNDYgMjAgMTggMTkuMTA0NiAxOCAxOFYxNE0xNCA0SDIwTTIwIDRWMTBNMjAgNEwxMCAxNCIgc3Ryb2tlPSIjNjQ3QkE1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==);
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin: 0 0 0 2px;
+}
+
 .dbw-cost-calc-field input {
     position: relative;
     font-family: inherit;
@@ -219,7 +239,8 @@ button.dbw-cost-calc-btn[disabled="disabled"] {
     min-width: 352px;
 }
 
-.dbw-cost-calc-get-quote-field .quote-input input {
+.dbw-cost-calc-get-quote-field .quote-input input,
+.dbw-cost-calc-get-quote-field .quote-input textarea {
     font-family: Montserrat, serif;
     font-size: 18px;
     font-weight: 400;
@@ -228,6 +249,10 @@ button.dbw-cost-calc-btn[disabled="disabled"] {
     border-radius: 4px;
     background: #fff;
     padding: 11px 27px;
+}
+
+.dbw-cost-calc-get-quote-field .quote-input textarea {
+    resize: vertical;
 }
 
 .dbw-cost-calc-get-quote-actions {
@@ -434,7 +459,8 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
         min-width: 70%;
     }
 
-    .dbw-cost-calc-get-quote-field .quote-input input {
+    .dbw-cost-calc-get-quote-field .quote-input input,
+    .dbw-cost-calc-get-quote-field .quote-input textarea {
         font-size: 10px;
         padding: 8px 27px;
     }

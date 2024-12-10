@@ -8,6 +8,8 @@ jQuery(document).ready(function($) {
             '<tr>' +
                 '<td><input type="text" name="dbw-cost-calculator-instance-types[name][]" value="" required /></td>' +
                 '<td><input type="text" name="dbw-cost-calculator-instance-types[price][]" value="" required /></td>' +
+                '<td><input type="text" name="dbw-cost-calculator-instance-types[link_label][]" value="" /></td>' +
+                '<td><input type="text" name="dbw-cost-calculator-instance-types[link_url][]" value="" /></td>' +
                 '<td><a class="button button-secondary remove-instance-type" href="#">Remove</a></td>' +
             '</tr>'
         );
@@ -41,6 +43,8 @@ jQuery(document).ready(function($) {
                 '<td><input type="text" name="dbw-cost-calculator-addons[name][]" value="" required /></td>' +
                 '<td><input type="text" name="dbw-cost-calculator-addons[price][]" value="" required /></td>' +
                 '<td><input type="text" name="dbw-cost-calculator-addons[platforms][]" value="" required /></td>' +
+                '<td><input type="text" name="dbw-cost-calculator-addons[link_label][]" value="" /></td>' +
+                '<td><input type="text" name="dbw-cost-calculator-addons[link_url][]" value="" /></td>' +
                 '<td><a class="button button-secondary remove-discount-rate" href="#">Remove</a></td>' +
             '</tr>'
         );

@@ -102,7 +102,8 @@ jQuery(document).ready(function($){
             priceAfterDiscount: $('#price-after-discount').text(),
             email: $form.find('input[name="email"]').val(),
             name: $form.find('input[name="name"]').val(),
-            company: $form.find('input[name="company"]').val()
+            company: $form.find('input[name="company"]').val(),
+            comments: $form.find('textarea[name="comments"]').val()
         }, function(response) {
             if (response.success) {
                 $form.attr('data-step', 'thank-you');

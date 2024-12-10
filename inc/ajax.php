@@ -76,6 +76,7 @@ function dbw_cost_calc_get_quote() {
 	$message .= '<tr><td>Email</td><td>' . esc_html($_POST['email']) . '</td></tr>';
 	$message .= '<tr><td>Name</td><td>' . esc_html($_POST['name']) . '</td></tr>';
 	$message .= '<tr><td>Company name</td><td>' . esc_html($_POST['company']) . '</td></tr>';
+	$message .= '<tr><td>Comments</td><td>' . esc_html($_POST['comments']) . '</td></tr>';
 	$message .= '</table>';
 
 	$message = '---BEGIN JSON---' . json_encode($json_data) . '---END JSON---' . PHP_EOL . $message;

@@ -12,7 +12,22 @@ defined('ABSPATH') || exit;
                         for ($i = 0; $i < count($types['name']); $i++) { ?>
                             <div class="dbw-cost-calc-field">
                                 <label>
-                                    <span><?= $types['name'][$i]; ?></span>
+                                    <div class="dbw-cost-call-name-wrap">
+                                        <?= $types['name'][$i]; ?>
+                                        <?php
+                                            if (!empty($types['link_label'][$i]) && !empty($types['link_url'][$i])) {
+                                                $attr = str_starts_with($types['link_url'][$i], '/') || str_starts_with($types['link_url'][$i], site_url()) ?
+                                                    '' :
+                                                    ' target="_blank" rel="noopener noreferrer"';
+                                                printf(
+                                                    '<a class="dbw-cost-call-res-link" href="%s"%s>%s</a>',
+                                                    esc_url($types['link_url'][$i]),
+	                                                $attr,
+                                                    esc_html($types['link_label'][$i])
+                                                );
+                                            }
+                                        ?>
+                                    </div>
                                     <div>
                                         <input type="number" name="<?= sanitize_key($types['name'][$i]); ?>" value="0" min="0" max="10000" />
                                     </div>
@@ -24,7 +39,7 @@ defined('ABSPATH') || exit;
             </div>
 		</div>
 		<div class="dbw-cost-calc-fields-col dbw-cost-calc-shadow">
-            <h2 class="dbw-cost-calc-fields-col-title">Extra Cost Add-ons</h2>
+            <h2 class="dbw-cost-calc-fields-col-title">Premium packages and add-ons</h2>
             <div class="dbw-cost-calc-fields-extra">
                 <?php
                     $addons = get_option('dbw-cost-calculator-addons');
@@ -32,9 +47,26 @@ defined('ABSPATH') || exit;
                         for ($i = 0; $i < count($addons['name']); $i++) { ?>
                             <div class="dbw-cost-calc-field">
                                 <label>
-                                    <div>
+                                    <div class="dbw-cost-call-name-wrap">
                                         <div class="label-title"><?= $addons['name'][$i]; ?></div>
                                         <div class="label-desc">($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?></div>
+	                                    <?php
+                                            if (!empty($types['link_label'][$i]) && !empty($types['link_url'][$i])) {
+	                                            $class = 'dbw-cost-call-res-link';
+                                                $attr = '';
+	                                            if (!str_starts_with($types['link_url'][$i], '/') && !str_starts_with($types['link_url'][$i], site_url())) {
+		                                            $class .= ' external-link';
+                                                    $attr .= ' target="_blank" rel="noopener noreferrer"';
+	                                            }
+                                                printf(
+                                                    '<a class="%s" href="%s"%s>%s</a>',
+	                                                $class,
+                                                    esc_url($types['link_url'][$i]),
+                                                    $attr,
+                                                    esc_html($types['link_label'][$i])
+                                                );
+                                            }
+	                                    ?>
                                     </div>
                                     <div>
                                         <input type="number" name="<?= sanitize_key($addons['name'][$i]); ?>" value="0" min="0" max="10000" />
@@ -54,7 +86,7 @@ defined('ABSPATH') || exit;
             <span class="summary-item-val" id="price-before-discount">$0.00</span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
-            <span>Discount</span>
+            <span>Volume discount</span>
             <span class="summary-item-val" id="discount-amount">$0.00</span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
@@ -102,6 +134,16 @@ defined('ABSPATH') || exit;
                     </div>
                     <div class="quote-input">
                         <input type="text" name="company" placeholder="Company" />
+                    </div>
+                </label>
+            </div>
+            <div class="dbw-cost-calc-get-quote-field">
+                <label>
+                    <div class="quote-label">
+                        Comments
+                    </div>
+                    <div class="quote-input">
+                        <textarea name="comments"></textarea>
                     </div>
                 </label>
             </div>

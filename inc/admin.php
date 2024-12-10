@@ -114,13 +114,17 @@ function dbw_cost_calc_settings_field_instance_types()
 		for ($i = 0; $i < count($types_raw['name']); $i++) {
 			$types[] = [
 				'name' => $types_raw['name'][$i],
-				'price' => $types_raw['price'][$i]
+				'price' => $types_raw['price'][$i],
+				'link_label' => $types_raw['link_label'][$i] ?? '',
+				'link_url' => $types_raw['link_url'][$i] ?? ''
 			];
 		}
 	} else {
 		$types[] = [
 			'name' => '',
-			'price' => ''
+			'price' => '',
+			'link_label' => '',
+			'link_url' => ''
 		];
 	} ?>
     <table class="dbw-cost-calc-settings-table">
@@ -128,6 +132,8 @@ function dbw_cost_calc_settings_field_instance_types()
             <tr>
                 <th>Name</th>
                 <th>Price</th>
+                <th>Link Label</th>
+                <th>Link URL</th>
                 <th></th>
             </tr>
         </thead>
@@ -136,6 +142,8 @@ function dbw_cost_calc_settings_field_instance_types()
                 <tr>
                     <td><input type="text" name="dbw-cost-calculator-instance-types[name][]" value="<?= esc_attr($type['name']); ?>" required /></td>
                     <td><input type="text" name="dbw-cost-calculator-instance-types[price][]" value="<?= esc_attr($type['price']); ?>" required /></td>
+                    <td><input type="text" name="dbw-cost-calculator-instance-types[link_label][]" value="<?= esc_attr($type['link_label']); ?>" /></td>
+                    <td><input type="text" name="dbw-cost-calculator-instance-types[link_url][]" value="<?= esc_attr($type['link_url']); ?>" /></td>
                     <td><a class="button button-secondary remove-instance-type" href="#">Remove</a></td>
                 </tr>
             <?php } ?>
@@ -258,7 +266,9 @@ function dbw_cost_calc_settings_field_addons()
 			$addons[] = [
 				'name' => $addons_raw['name'][$i],
 				'price' => $addons_raw['price'][$i],
-                'platforms' => $addons_raw['platforms'][$i]
+                'platforms' => $addons_raw['platforms'][$i],
+				'link_label' => $addons_raw['link_label'][$i] ?? '',
+				'link_url' => $addons_raw['link_url'][$i] ?? '',
 			];
 		}
 	} ?>
@@ -268,6 +278,8 @@ function dbw_cost_calc_settings_field_addons()
             <th>Name</th>
             <th>Price</th>
             <th>Platforms</th>
+            <th>Link Label</th>
+            <th>Link URL</th>
             <th></th>
         </tr>
         </thead>
@@ -277,6 +289,8 @@ function dbw_cost_calc_settings_field_addons()
                     <td><input type="text" name="dbw-cost-calculator-addons[name][]" value="<?= esc_attr($addon['name']); ?>" required /></td>
                     <td><input type="text" name="dbw-cost-calculator-addons[price][]" value="<?= esc_attr($addon['price']); ?>" required /></td>
                     <td><input type="text" name="dbw-cost-calculator-addons[platforms][]" value="<?= esc_attr($addon['platforms']); ?>" required /></td>
+                    <td><input type="text" name="dbw-cost-calculator-addons[link_label][]" value="<?= esc_attr($addon['link_label']); ?>" /></td>
+                    <td><input type="text" name="dbw-cost-calculator-addons[link_url][]" value="<?= esc_attr($addon['link_url']); ?>" /></td>
                     <td><a class="button button-secondary remove-addon" href="#">Remove</a></td>
                 </tr>
             <?php } ?>
