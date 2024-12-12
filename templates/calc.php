@@ -16,13 +16,17 @@ defined('ABSPATH') || exit;
                                         <?= $types['name'][$i]; ?>
                                         <?php
                                             if (!empty($types['link_label'][$i]) && !empty($types['link_url'][$i])) {
-                                                $attr = str_starts_with($types['link_url'][$i], '/') || str_starts_with($types['link_url'][$i], site_url()) ?
-                                                    '' :
-                                                    ' target="_blank" rel="noopener noreferrer"';
+                                                $class = 'dbw-cost-call-res-link';
+                                                $attr = '';
+                                                if (!str_starts_with($types['link_url'][$i], '/') && !str_starts_with($types['link_url'][$i], site_url())) {
+                                                    $class .= ' external-link';
+                                                    $attr .= ' target="_blank" rel="noopener noreferrer"';
+                                                }
                                                 printf(
-                                                    '<a class="dbw-cost-call-res-link" href="%s"%s>%s</a>',
+                                                    '<a class="%s" href="%s"%s>%s</a>',
+                                                    $class,
                                                     esc_url($types['link_url'][$i]),
-	                                                $attr,
+                                                    $attr,
                                                     esc_html($types['link_label'][$i])
                                                 );
                                             }
@@ -51,19 +55,19 @@ defined('ABSPATH') || exit;
                                         <div class="label-title"><?= $addons['name'][$i]; ?></div>
                                         <div class="label-desc">($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?></div>
 	                                    <?php
-                                            if (!empty($types['link_label'][$i]) && !empty($types['link_url'][$i])) {
+                                            if (!empty($addons['link_label'][$i]) && !empty($addons['link_url'][$i])) {
 	                                            $class = 'dbw-cost-call-res-link';
                                                 $attr = '';
-	                                            if (!str_starts_with($types['link_url'][$i], '/') && !str_starts_with($types['link_url'][$i], site_url())) {
+	                                            if (!str_starts_with($addons['link_url'][$i], '/') && !str_starts_with($addons['link_url'][$i], site_url())) {
 		                                            $class .= ' external-link';
                                                     $attr .= ' target="_blank" rel="noopener noreferrer"';
 	                                            }
                                                 printf(
                                                     '<a class="%s" href="%s"%s>%s</a>',
 	                                                $class,
-                                                    esc_url($types['link_url'][$i]),
+                                                    esc_url($addons['link_url'][$i]),
                                                     $attr,
-                                                    esc_html($types['link_label'][$i])
+                                                    esc_html($addons['link_label'][$i])
                                                 );
                                             }
 	                                    ?>

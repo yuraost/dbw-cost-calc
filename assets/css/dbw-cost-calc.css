@@ -75,6 +75,7 @@ body .dbw-cost-calc-fields-col-title {
 
 .dbw-cost-call-name-wrap .dbw-cost-call-res-link {
     font-weight: 400;
+    font-size: 14px;
 }
 .dbw-cost-call-name-wrap .dbw-cost-call-res-link.external-link:after {
     content: '';

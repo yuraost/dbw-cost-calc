@@ -2,7 +2,7 @@
 /**
  * Plugin Name: dbWatch Cost Calculator
  * Description: The dbWatch Cost Calculator is a powerful and user-friendly plugin designed to help you easily calculate the cost of licenses for dbWatch Control Center. This plugin provides a simple interface where users can input their requirements and instantly get an accurate estimate of the licensing costs.
- * Version: 1.1
+ * Version: 1.2
  * Author: Yurii Ostapchuk
  */
 
