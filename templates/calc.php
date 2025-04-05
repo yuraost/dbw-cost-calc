@@ -85,84 +85,55 @@ defined('ABSPATH') || exit;
 	</div>
 
     <?php
-    // Fetch support levels from backend
+    // Fetch support levels from the backend
     $support_levels = get_option('dbw-cost-calculator-support-levels', [
-        'basic' => 0,
-        'advanced' => 10,
-        'premium' => 25
+        'basic' => ['title' => 'Basic Support', 'percent' => 0, 'learn_more' => '', 'features' => []],
+        'advanced' => ['title' => 'Advanced Support', 'percent' => 10, 'learn_more' => '', 'features' => []],
+        'premium' => ['title' => 'Premium Support', 'percent' => 25, 'learn_more' => '', 'features' => []],
     ]);
 
-    // Define feature sets
-    $features = [
-        'Email ticketing support',
-        'Response time within 3 days',
-        'Premium access to our LMS',
-        'One-to-one yearly customer support sessions',
-        '3 one-to-one technical support sessions per year',
-        '24/7 phone support',
-        'Dedicated client contact',
-        'Expert-driven health check'
-    ];
-
-    // Support levels and features
-    $support_data = [
-        'basic' => [true, true, true, true, false, false, false, false],
-        'advanced' => [
-            true,
-            'Response time within 1 day',
-            true,
-            'Twice a year one-to-one customer sessions per year',
-            true,
-            false,
-            false,
-            false
-        ],
-        'premium' => [
-            'Email ticketing support with 3hr response time (office hours)',
-            true,
-            true,
-            'Twice a year one-to-one customer sessions per year',
-            '6 one-to-one technical support sessions per year',
-            true,
-            true,
-            true
-        ]
-    ];
-
     // Render feature line
-    function render_feature($value, $fallback = '') {
-        if (is_bool($value)) {
-            return $value
-                ? '<span class="icon-check">✔</span> ' . esc_html($fallback)
-                : '<span class="icon-x">✘</span> ' . esc_html($fallback);
+    function render_feature($feature, $default = '') {
+        // Check if the feature is an array with 'included' and 'text' as keys
+        if (is_array($feature) && isset($feature['included'], $feature['text'])) {
+            // Render icon based on the 'included' value
+            if ($feature['included']) {
+                return '<span class="icon-check">✔</span> ' . esc_html($feature['text']);
+            } else {
+                return '<span class="icon-x">✘</span> ' . esc_html($feature['text']);
+            }
         }
-        return '<span class="icon-check">✔</span> ' . esc_html($value);
+    
+        // Default behavior if the feature is not an array or missing required keys
+        return '<span class="icon-check">✔</span> ' . esc_html($default);
     }
     ?>
 
     <div class="dbw-support-levels">
         <h2 class="dbw-cost-calc-fields-col-title">Support Level</h2>
         <div id="support-levels-container">
-            <?php foreach ($support_data as $key => $support): ?>
+            <?php foreach ($support_levels as $key => $level): ?>
                 <label class="support-level-block dbw-cost-calc-shadow <?= $key === 'basic' ? 'open' : ''; ?>">
                     <input type="radio" name="support_level" value="<?= esc_attr($key); ?>" <?= $key === 'basic' ? 'checked' : ''; ?> hidden />
                     <div class="support-header">
-                        <?= ucfirst($key); ?> Support
+                        <?= esc_html($level['title']); ?>
                         <span class="toggle-icon">▼</span>
                     </div>
                     <div class="support-body" style="<?= $key === 'basic' ? 'display:block;' : 'display:none;'; ?>">
                         <ul class="support-features">
-                            <?php foreach ($support as $i => $feature): ?>
-                                <li><?= render_feature($feature, $features[$i]); ?></li>
+                            <?php foreach ($level['features'] as $feature): ?>
+                                <li><?= render_feature($feature); ?></li>  <!-- Display feature text with icons -->
                             <?php endforeach; ?>
                         </ul>
                         <div class="support-footer">
                             <div class="support-price">
-                                <?= $key === 'basic' ? 'No additional cost' : '+ ' . esc_html($support_levels[$key]) . '%'; ?>
+                                <?= $key === 'basic' ? 'No additional cost' : '+ ' . esc_html($level['percent']) . '%'; ?>
                             </div>
-                            <div class="support-learn">
-                                <a href="#" class="learn-more">Learn more</a>
-                            </div>
+                            <?php if (!empty($level['learn_more'])): ?>
+                                <div class="support-learn">
+                                    <a href="<?= esc_url($level['learn_more']); ?>" class="learn-more">Learn more</a>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="dbw-cost-calc-footer">
@@ -173,6 +144,16 @@ defined('ABSPATH') || exit;
                     </div>
                 </label>
             <?php endforeach; ?>
+        </div>
+    </div>
+    <div class="dbw-cost-calc-subscription-term">
+        <div class="subscription-inner">
+            <label for="subscription-term">Subscription term</label>
+            <select id="subscription-term" name="subscription_term" class="subscription_term_sel">
+                <option value="1" selected>1 Year</option>
+                <option value="3">3 Years</option>
+                <option value="5">5 Years</option>
+            </select>
         </div>
     </div>
 
@@ -195,7 +176,7 @@ defined('ABSPATH') || exit;
             <span class="summary-item-val" id="total-price-per-month">$0.00</span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow item-total">
-            <span>Total price per year</span>
+            <span id="total-price-label">Total price per year</span>
             <span class="summary-item-val" id="price-after-discount">$0.00</span>
         </div>
 	</div>

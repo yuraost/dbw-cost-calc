@@ -17,7 +17,7 @@ jQuery(document).ready(function($) {
     function updateSummary() {
         let priceBeforeDiscount = 0;
         let totalInstanceQuantity = 0;
-
+    
         $calcFieldsTypes.each(function() {
             const val = parseInt($(this).val(), 10);
             if (val > 0) {
@@ -26,7 +26,7 @@ jQuery(document).ready(function($) {
                 totalInstanceQuantity += val;
             }
         });
-
+    
         $calcFieldsAddons.each(function() {
             const val = parseInt($(this).val(), 10);
             if (val > 0) {
@@ -34,37 +34,52 @@ jQuery(document).ready(function($) {
                 priceBeforeDiscount += val * dbwCostCalcData.addons[name].price;
             }
         });
-
+    
         let discount = 0;
         for (const rate of dbwCostCalcData.discountRates) {
             if (totalInstanceQuantity >= rate.minQty) {
                 discount = rate.discount;
             }
         }
-
+    
         const discountAmount = priceBeforeDiscount * discount;
         let priceAfterDiscount = priceBeforeDiscount - discountAmount;
-
+    
         const supportLevel = $supportRadios.filter(':checked').val();
         let supportPercent = 0;
-
+    
         if (supportLevel === 'advanced') {
             supportPercent = 15;
         } else if (supportLevel === 'premium') {
             supportPercent = 25;
         }
-
+    
         const supportIncrease = priceAfterDiscount * (supportPercent / 100);
         priceAfterDiscount += supportIncrease;
-
+    
+        // Get selected subscription term (1, 3, or 5)
+        const subscriptionTerm = parseInt($('#subscription-term').val(), 10);
+    
+        // Total cost across selected years
+        const totalPriceForTerm = priceAfterDiscount * subscriptionTerm;
+    
         const totalPricePerInstance = totalInstanceQuantity > 0 ? priceAfterDiscount / totalInstanceQuantity : 0;
         const totalPricePerMonth = priceAfterDiscount / 12;
-
+    
+        // Update labels
         $('#price-before-discount').text(USDollar.format(priceBeforeDiscount));
         $('#discount-amount').text(USDollar.format(discountAmount));
         $('#total-price-per-instance').text(USDollar.format(totalPricePerInstance));
         $('#total-price-per-month').text(USDollar.format(totalPricePerMonth));
-        $('#price-after-discount').text(USDollar.format(priceAfterDiscount));
+    
+        // Update label and value based on term
+        if (subscriptionTerm > 1) {
+            $('#total-price-label').text(`Total price for ${subscriptionTerm} years`);
+            $('#price-after-discount').text(USDollar.format(totalPriceForTerm));
+        } else {
+            $('#total-price-label').text('Total price per year');
+            $('#price-after-discount').text(USDollar.format(priceAfterDiscount));
+        }
     }
 
     // Expand/collapse toggle
@@ -124,6 +139,7 @@ jQuery(document).ready(function($) {
     }
 
     $calcFieldsTypes.add($calcFieldsAddons).on('input', updateSummary);
+    $('#subscription-term').on('change', updateSummary);
 
     $quoteBtn.on('click', function(e) {
         e.preventDefault();

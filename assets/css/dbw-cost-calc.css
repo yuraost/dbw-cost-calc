@@ -26,6 +26,7 @@ body .dbw-cost-calc-title {
     flex-wrap: wrap;
     gap: 7.5%;
     margin-top: 35px;
+    margin-bottom: 50px;
 }
 
 .dbw-cost-calc-fields-col {
@@ -528,6 +529,46 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
     padding: 10px;
 }
 
+.dbw-cost-calc-subscription-term {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.subscription-inner {
+    max-width: 300px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.subscription-inner label {
+    font-size: 22px;
+    line-height: 122.5%;
+    text-align: center;
+    margin-bottom: 50px;
+    color: #394494;
+    font-weight: bold;
+}
+
+.subscription_term_sel {
+    width: 100%;
+    padding: 10px;
+    border: none !important;
+    border-radius: 6px;
+    box-shadow: 0 100px 80px 0 #2245B412,
+     0 41.78px 33.42px 0 #2245B40D,
+      0 22.34px 17.87px 0 #2245B40A,
+       0 12.52px 10.02px 0 #2245B40A,
+        0 6.65px 5.32px 0 #2245B408,
+         0 2.77px 2.21px 0 #2245B405;
+}
+
+select {
+    font-weight: 600;
+}
 
 @media (max-width: 1280px) {
     .dbw-cost-calc-summary:after {
