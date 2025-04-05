@@ -380,11 +380,11 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 
 /* Individual support level block */
 #support-levels-container label {
-    width: 300px;
+    width: 320px;
     box-sizing: border-box;
     padding: 0.5rem;
     margin-top: 10px;
-    border-radius: 15px;
+    border-radius: 25px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -525,7 +525,7 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 
 #support-levels-container label.selected {
     border: 2px solid #394494;
-    border-radius: 8px;
+    border-radius: 25px;
     padding: 10px;
 }
 
@@ -565,14 +565,33 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
         0 6.65px 5.32px 0 #2245B408,
          0 2.77px 2.21px 0 #2245B405;
 }
-
+.currency-selector label {
+    color: #394494; /* Set the label text color */
+}
+#currency {
+    box-shadow: 0 100px 80px 0 #2245B412,
+     0 41.78px 33.42px 0 #2245B40D,
+      0 22.34px 17.87px 0 #2245B40A,
+       0 12.52px 10.02px 0 #2245B40A,
+        0 6.65px 5.32px 0 #2245B408,
+         0 2.77px 2.21px 0 #2245B405;
+    border-bottom: 1px solid #394494;
+}
 select {
     font-weight: 600;
+    border: none;
+    height: 2.5em !important;
 }
+
 
 @media (max-width: 1280px) {
     .dbw-cost-calc-summary:after {
         display: none;
+    }
+    #support-levels-container {
+        gap: 40px;
+        width: 90%;
+        margin: 0 auto;
     }
 }
 
@@ -582,10 +601,14 @@ select {
         gap: 55px;
         margin-top: 40px;
     }
+    #support-levels-container {
+        gap: 40px;
+    }
 
 }
 
 @media (max-width: 767px) {
+
     body .dbw-cost-calc-title {
         font-size: 24px;
     }
@@ -595,7 +618,6 @@ select {
     }
 
     body .dbw-cost-calc-fields-col-title {
-        font-size: 14px;
         margin-bottom: 20px;
     }
 
@@ -627,7 +649,6 @@ select {
     .dbw-cost-calc-field .label-desc {
         font-size: 64.3%;
         line-height: 122%;
-        margin-bottom: -10px;
     }
 
     .dbw-cost-calc-summary {
@@ -717,5 +738,12 @@ select {
         width: 100%;
         max-width: 400px;
         height: auto;
+    }
+    #support-header {
+        font-size: 1.4em;
+    }
+
+    #currency {
+        margin-bottom: 35px;
     }
 }

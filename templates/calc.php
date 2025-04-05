@@ -2,6 +2,14 @@
 defined('ABSPATH') || exit;
 ?>
 <form id="dbw-cost-calc-form" class="dbw-cost-calc-form" action="/" method="post" data-step="get-quote">
+    <div class="currency-selector">
+        <label for="currency">Select Currency:</label>
+        <select id="currency" name="currency">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="NOK">NOK</option>
+        </select>
+    </div>
 	<div class="dbw-cost-calc-fields">
 		<div class="dbw-cost-calc-fields-col dbw-cost-calc-shadow">
             <h2 class="dbw-cost-calc-fields-col-title">Instance Types</h2>
@@ -157,29 +165,29 @@ defined('ABSPATH') || exit;
         </div>
     </div>
 
-	<div class="dbw-cost-calc-summary">
+    <div class="dbw-cost-calc-summary">
         <h3 class="dbw-cost-calc-title">Summary</h3>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Price before discount</span>
-            <span class="summary-item-val" id="price-before-discount">$0.00</span>
+            <span class="summary-item-val" id="price-before-discount"></span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Volume discount</span>
-            <span class="summary-item-val" id="discount-amount">$0.00</span>
+            <span class="summary-item-val" id="discount-amount"></span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Yearly price per instance</span>
-            <span class="summary-item-val" id="total-price-per-instance">$0.00</span>
+            <span class="summary-item-val" id="total-price-per-instance"></span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Total price per month</span>
-            <span class="summary-item-val" id="total-price-per-month">$0.00</span>
+            <span class="summary-item-val" id="total-price-per-month"></span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow item-total">
             <span id="total-price-label">Total price per year</span>
-            <span class="summary-item-val" id="price-after-discount">$0.00</span>
+            <span class="summary-item-val" id="price-after-discount"></span>
         </div>
-	</div>
+    </div>
 
     <div class="dbw-cost-calc-get-quote">
         <div class="dbw-cost-calc-get-quote-btn">

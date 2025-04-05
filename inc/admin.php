@@ -108,6 +108,19 @@ function dbw_cost_calc_settings_fields()
 		'dbw-cost-calculator',
 		'dbw-cost-calculator-section'
 	);
+	register_setting(
+		'dbw-cost-calculator-group',
+		'dbw-cost-calculator-term-discounts',
+		'dbw_cost_calc_settings_field_term_discounts_sanitize'
+	);
+	
+	add_settings_field(
+		'dbw-cost-calculator-term-discounts',
+		'Term Discounts',
+		'dbw_cost_calc_settings_field_term_discounts',
+		'dbw-cost-calculator',
+		'dbw-cost-calculator-section'
+	);
 }
 
 /**
@@ -708,4 +721,34 @@ function dbw_cost_calculator_notices()
         </div>
         <?php
     }
+}
+
+function dbw_cost_calc_settings_field_term_discounts() {
+    $discounts = get_option('dbw-cost-calculator-term-discounts', array('1' => 0, '3' => 0, '5' => 0));
+    ?>
+    <label>
+        1-Year Discount:
+        <input type="number" step="0.01" min="0" max="1" name="dbw-cost-calculator-term-discounts[1]" value="<?php echo esc_attr($discounts['1']); ?>" />
+    </label>
+    <br>
+    <label>
+        3-Year Discount:
+        <input type="number" step="0.01" min="0" max="1" name="dbw-cost-calculator-term-discounts[3]" value="<?php echo esc_attr($discounts['3']); ?>" />
+    </label>
+    <br>
+    <label>
+        5-Year Discount:
+        <input type="number" step="0.01" min="0" max="1" name="dbw-cost-calculator-term-discounts[5]" value="<?php echo esc_attr($discounts['5']); ?>" />
+    </label>
+    <p class="description">Enter values like 0.1 for 10% discount. Max is 1 (100%).</p>
+    <?php
+}
+
+function dbw_cost_calc_settings_field_term_discounts_sanitize($input) {
+    $output = array();
+    foreach (array('1', '3', '5') as $term) {
+        $val = isset($input[$term]) ? floatval($input[$term]) : 0;
+        $output[$term] = ($val >= 0 && $val <= 1) ? $val : 0;
+    }
+    return $output;
 }
