@@ -1,0 +1,12 @@
+.dbw-cost-calc-settings-table th,
+.dbw-cost-calc-settings-table td {
+    padding: 3px;
+}
+
+.dbw-cost-calc-settings-table tfoot td {
+    padding-left: 5px;
+}
+
+.dbw-cost-calc-settings-table input {
+    width :100%;
+}
