@@ -14,11 +14,10 @@ jQuery(document).ready(function($) {
         currency: 'USD',
     });
 
-    // Function to update the summary section
     function updateSummary() {
         let priceBeforeDiscount = 0;
         let totalInstanceQuantity = 0;
-    
+
         $calcFieldsTypes.each(function() {
             const val = parseInt($(this).val(), 10);
             if (val > 0) {
@@ -27,7 +26,7 @@ jQuery(document).ready(function($) {
                 totalInstanceQuantity += val;
             }
         });
-    
+
         $calcFieldsAddons.each(function() {
             const val = parseInt($(this).val(), 10);
             if (val > 0) {
@@ -35,36 +34,32 @@ jQuery(document).ready(function($) {
                 priceBeforeDiscount += val * dbwCostCalcData.addons[name].price;
             }
         });
-    
-        // Calculate volume discount
+
         let discount = 0;
         for (const rate of dbwCostCalcData.discountRates) {
             if (totalInstanceQuantity >= rate.minQty) {
                 discount = rate.discount;
             }
         }
-    
+
         const discountAmount = priceBeforeDiscount * discount;
         let priceAfterDiscount = priceBeforeDiscount - discountAmount;
-    
-        // Apply support level percentage
+
         const supportLevel = $supportRadios.filter(':checked').val();
         let supportPercent = 0;
-    
+
         if (supportLevel === 'advanced') {
-            supportPercent = 15;  // Advanced increases by 15%
+            supportPercent = 15;
         } else if (supportLevel === 'premium') {
-            supportPercent = 25;  // Premium increases by 25%
+            supportPercent = 25;
         }
-    
-        // Calculate the support increase
+
         const supportIncrease = priceAfterDiscount * (supportPercent / 100);
         priceAfterDiscount += supportIncrease;
-    
+
         const totalPricePerInstance = totalInstanceQuantity > 0 ? priceAfterDiscount / totalInstanceQuantity : 0;
         const totalPricePerMonth = priceAfterDiscount / 12;
-    
-        // Update the summary with calculated values
+
         $('#price-before-discount').text(USDollar.format(priceBeforeDiscount));
         $('#discount-amount').text(USDollar.format(discountAmount));
         $('#total-price-per-instance').text(USDollar.format(totalPricePerInstance));
@@ -72,46 +67,70 @@ jQuery(document).ready(function($) {
         $('#price-after-discount').text(USDollar.format(priceAfterDiscount));
     }
 
-    // Function to handle expand/collapse of all support blocks
+    // Expand/collapse toggle
     $supportBlocks.each(function() {
         const $this = $(this);
         const $header = $this.find('.support-header');
         const $features = $this.find('.support-features');
         const $toggleIcon = $header.find('.toggle-icon');
-    
-        // Initially hide the features for all blocks
+
         $features.hide();
         $toggleIcon.removeClass('rotate');
         $this.removeClass('open');
-    
-        // On click, toggle all blocks (open or close)
-        $header.on('click', function() {
-            const isAnyBlockOpen = $supportBlocks.filter('.open').length > 0;
 
-            if (isAnyBlockOpen) {
-                // If any block is open, close all blocks
+        $header.on('click', function() {
+            const isAnyOpen = $supportBlocks.filter('.open').length > 0;
+
+            if (isAnyOpen) {
                 $supportBlocks.removeClass('open').find('.support-features').slideUp();
                 $supportBlocks.find('.toggle-icon').removeClass('rotate');
             } else {
-                // If no block is open, open all blocks
                 $supportBlocks.addClass('open').find('.support-features').slideDown();
                 $supportBlocks.find('.toggle-icon').addClass('rotate');
             }
         });
     });
 
-    // Update summary when fields change
-    $calcFieldsTypes.add($calcFieldsAddons).on('input', updateSummary);
-    $supportRadios.on('change', updateSummary);
+    // Highlight only main support blocks (not footer blocks)
+    $supportRadios.on('change', function() {
+        const selectedValue = $(this).val();
 
-    // Quote button click event
+        $supportBlocks.each(function() {
+            const $block = $(this);
+            const $radio = $block.find('input[type="radio"]');
+
+            if ($radio.val() === selectedValue) {
+                $block.addClass('selected');
+            } else {
+                $block.removeClass('selected');
+            }
+        });
+
+        updateSummary();
+    });
+
+    // Make entire support block clickable/selectable
+    $supportBlocks.on('click', function(e) {
+        if (!$(e.target).is('input[type="radio"]')) {
+            const $radio = $(this).find('input[type="radio"]');
+            $radio.prop('checked', true).trigger('change');
+        }
+    });
+
+    // Initial support highlight
+    const $checkedSupport = $supportRadios.filter(':checked');
+    if ($checkedSupport.length) {
+        $checkedSupport.closest('label').addClass('selected');
+    }
+
+    $calcFieldsTypes.add($calcFieldsAddons).on('input', updateSummary);
+
     $quoteBtn.on('click', function(e) {
         e.preventDefault();
         $form.attr('data-step', 'quote-submit');
         return false;
     });
 
-    // Form submit event
     $form.on('submit', function(e) {
         e.preventDefault();
         if ($form.hasClass('processing')) return false;
@@ -183,14 +202,12 @@ jQuery(document).ready(function($) {
         return false;
     });
 
-    // Thank you close button event
     $thankYouCloseBtn.on('click', function(e) {
         e.preventDefault();
         $form.attr('data-step', 'get-quote');
         return false;
     });
 
-    // Terms toggle event
     $termsToggle.on('click', function() {
         const $_this = $(this);
         const $svg = $_this.find('svg');
@@ -208,37 +225,32 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // Select Block behavior
+    // Footer radio block (just label text toggle)
     $('.select-footer-block input[type="radio"]').on('change', function() {
         const $label = $(this).closest('label');
         const $span = $label.find('span');
 
-        // Deselect others
         $('.select-footer-block input[type="radio"]').each(function() {
             const $otherLabel = $(this).closest('label');
             const $otherSpan = $otherLabel.find('span');
             if (!$(this).is(':checked')) {
                 $otherSpan.text('Select Block');
-                $otherLabel.css('border', 'none');
             }
         });
 
         if ($(this).is(':checked')) {
             $span.text('Selected');
-            $label.css('border', '3px solid #394494');
         }
     });
 
-    // === Preselect the first footer block ===
+    // Preselect first footer block (without border)
     const $firstRadio = $('.select-footer-block input[type="radio"]').first();
     const $firstLabel = $firstRadio.closest('label');
     const $firstSpan = $firstLabel.find('span');
-
     $firstRadio.prop('checked', true);
     $firstSpan.text('Selected');
-    $firstLabel.css('border', '3px solid #394494');
 
-    // === Fix default toggle state for support blocks ===
+    // Reset toggle state
     $supportBlocks.each(function() {
         const $block = $(this);
         $block.removeClass('open');
@@ -246,9 +258,9 @@ jQuery(document).ready(function($) {
         $block.find('.toggle-icon').removeClass('rotate');
     });
 
-    // Trigger summary update on load
     updateSummary();
 });
+
 
 
 
