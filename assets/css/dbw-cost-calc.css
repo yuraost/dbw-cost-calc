@@ -372,9 +372,9 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 /* Support Container layout */
 #support-levels-container {
     display: flex;
-    gap: 1em;
+    gap: 3em !important;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
     margin-bottom: 2rem;
 }
 

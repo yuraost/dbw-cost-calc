@@ -121,6 +121,15 @@ function dbw_cost_calc_settings_fields()
 		'dbw-cost-calculator',
 		'dbw-cost-calculator-section'
 	);
+
+    register_setting('dbw-cost-calculator-group', 'dbw-cost-calculator-currencies', 'dbw_cost_calc_settings_field_currencies_sanitize');
+    add_settings_field(
+        'dbw-cost-calculator-currencies',
+        'Currency Conversion Rates',
+        'dbw_cost_calc_settings_field_currencies',
+        'dbw-cost-calculator',
+        'dbw-cost-calculator-section'
+    );
 }
 
 /**
@@ -752,3 +761,25 @@ function dbw_cost_calc_settings_field_term_discounts_sanitize($input) {
     }
     return $output;
 }
+
+function dbw_cost_calc_settings_field_currencies() {
+    $currencies = get_option('dbw-cost-calculator-currencies', []);
+    $defaults = ['USD' => 1, 'EUR' => 0.9, 'NOK' => 10];
+
+    $currencies = wp_parse_args($currencies, $defaults);
+
+    foreach ($defaults as $code => $default) {
+        $value = esc_attr($currencies[$code]);
+        echo "<p><label for='currency_$code'>$code: </label> ";
+        echo "<input type='number' step='0.01' name='dbw-cost-calculator-currencies[$code]' id='currency_$code' value='$value' /></p>";
+    }
+}
+
+function dbw_cost_calc_settings_field_currencies_sanitize($input) {
+    $sanitized = [];
+    foreach ($input as $code => $rate) {
+        $sanitized[$code] = floatval($rate);
+    }
+    return $sanitized;
+}
+

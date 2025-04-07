@@ -10,11 +10,18 @@ jQuery(document).ready(function($) {
     const $supportBlocks = $('#support-levels-container label');
     const $currencySelector = $('#currency'); // Currency selector element
 
-    const conversionRates = {
-        USD: 1,
-        EUR: 0.91,  
-        NOK: 10.77   
-    };
+    let conversionRates = {};
+    const $exchangeRates = $('#dbw-exchange-rates');
+
+    try {
+        const rawRates = JSON.parse($exchangeRates.attr('data-rates'));
+        for (const [currency, rate] of Object.entries(rawRates)) {
+            conversionRates[currency] = parseFloat(rate);
+        }
+    } catch (e) {
+        console.error('Invalid exchange rate data:', e);
+        conversionRates = { USD: 1 };
+    }
 
     function updateSummary() {
         let priceBeforeDiscount = 0;

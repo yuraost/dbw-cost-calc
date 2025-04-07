@@ -2,6 +2,12 @@
 defined('ABSPATH') || exit;
 ?>
 <form id="dbw-cost-calc-form" class="dbw-cost-calc-form" action="/" method="post" data-step="get-quote">
+    <?php
+    $currencies = get_option('dbw-cost-calculator-currencies', []);
+    $defaults = ['USD' => 1, 'EUR' => 0.9, 'NOK' => 10];
+    $currencies = wp_parse_args($currencies, $defaults);
+    ?>
+    <div id="dbw-exchange-rates" data-rates='<?php echo json_encode($currencies); ?>'></div>
     <div class="currency-selector">
         <label for="currency">Select Currency:</label>
         <select id="currency" name="currency">
