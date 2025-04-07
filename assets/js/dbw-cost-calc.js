@@ -23,6 +23,13 @@ jQuery(document).ready(function($) {
         conversionRates = { USD: 1 };
     }
 
+    const currencySymbols = {
+        USD: '$',
+        EUR: '€',
+        NOK: 'kr'
+    };
+    const getCurrencySymbol = (code) => currencySymbols[code] || code;
+
     function updateSummary() {
         let priceBeforeDiscount = 0;
         let totalInstanceQuantity = 0;
@@ -93,6 +100,25 @@ jQuery(document).ready(function($) {
             $('#total-price-label').text('Total price per year');
             $('#price-after-discount').text(`${selectedCurrency} ${convertToCurrency(priceAfterDiscount)}`);
         }
+        // Convert and update each addon label price
+        $('.label-desc').each(function () {
+            const $desc = $(this);
+            const usdPrice = parseFloat($desc.data('usd-price'));
+            const selectedCurrency = $currencySelector.val();
+
+            if (isNaN(usdPrice)) return;
+
+            const rate = conversionRates[selectedCurrency] ?? 1;
+            const converted = (usdPrice * rate).toFixed(2);
+
+            // Try to extract "for XYZ" part from current text
+            const currentText = $desc.text();
+            const platformMatch = currentText.match(/for\s(.+)$/i);
+            const platformText = platformMatch ? platformMatch[1] : '';
+
+            $desc.text(`(${getCurrencySymbol(selectedCurrency)}${converted}) for ${platformText}`);
+        });
+        
     }
 
     // Expand/collapse toggle

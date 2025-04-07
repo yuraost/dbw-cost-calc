@@ -67,7 +67,9 @@ defined('ABSPATH') || exit;
                                 <label>
                                     <div class="dbw-cost-call-name-wrap">
                                         <div class="label-title"><?= $addons['name'][$i]; ?></div>
-                                        <div class="label-desc">($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?></div>
+                                        <div class="label-desc" data-usd-price="<?= $addons['price'][$i]; ?>">
+                                            ($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?>
+                                        </div>
 	                                    <?php
                                             if (!empty($addons['link_label'][$i]) && !empty($addons['link_url'][$i])) {
 	                                            $class = 'dbw-cost-call-res-link';
