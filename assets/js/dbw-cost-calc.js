@@ -9,6 +9,10 @@ jQuery(document).ready(function($) {
     const $supportRadios = $form.find('input[name="support_level"]');
     const $supportBlocks = $('#support-levels-container label');
     const $currencySelector = $('#currency'); // Currency selector element
+    const geoDefaultCurrency = $('#geo-default-currency').data('default-currency');
+    if (geoDefaultCurrency && $currencySelector.length) {
+        $currencySelector.val(geoDefaultCurrency).trigger('change');
+    }
 
     let conversionRates = {};
     const supportPercentages = {};

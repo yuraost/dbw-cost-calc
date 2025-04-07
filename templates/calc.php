@@ -8,6 +8,23 @@ defined('ABSPATH') || exit;
     $currencies = wp_parse_args($currencies, $defaults);
     ?>
     <div id="dbw-exchange-rates" data-rates='<?php echo json_encode($currencies); ?>'></div>
+    <?php
+    // Get country from GeoIP
+    $geo = geoip_detect2_get_info_from_current_ip();
+    $countryCode = $geo->country->isoCode ?? 'US'; // Fallback to US if detection fails
+
+    // Define Eurozone countries
+    $eurCountries = ['AT','BE','CY','EE','FI','FR','DE','GR','IE','IT','LV','LT','LU','MT','NL','PT','SK','SI','ES'];
+
+    if ($countryCode === 'NO') {
+        $defaultCurrency = 'NOK';
+    } elseif (in_array($countryCode, $eurCountries)) {
+        $defaultCurrency = 'EUR';
+    } else {
+        $defaultCurrency = 'USD';
+    }
+    ?>
+    <div id="geo-default-currency" data-default-currency="<?= esc_attr($defaultCurrency); ?>"></div>
     <div class="currency-selector">
         <label for="currency">Select Currency:</label>
         <select id="currency" name="currency">
@@ -16,10 +33,6 @@ defined('ABSPATH') || exit;
             <option value="NOK">NOK</option>
         </select>
     </div>
-    <?php
-    $term_discounts = get_option('dbw-cost-calculator-term-discounts', ['1' => 0, '3' => 0, '5' => 0]);
-    ?>
-    <div id="dbw-term-discounts" data-discounts='<?php echo json_encode($term_discounts); ?>'></div>
 	<div class="dbw-cost-calc-fields">
 		<div class="dbw-cost-calc-fields-col dbw-cost-calc-shadow">
             <h2 class="dbw-cost-calc-fields-col-title">Instance Types</h2>
