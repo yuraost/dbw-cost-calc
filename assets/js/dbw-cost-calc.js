@@ -11,6 +11,15 @@ jQuery(document).ready(function($) {
     const $currencySelector = $('#currency'); // Currency selector element
 
     let conversionRates = {};
+    const supportPercentages = {};
+
+    $('.support-price').each(function () {
+        const key = $(this).data('support-key');
+        const percent = parseFloat($(this).data('percent'));
+        if (key && !isNaN(percent)) {
+            supportPercentages[key] = percent;
+        }
+    });
     const $exchangeRates = $('#dbw-exchange-rates');
 
     try {
@@ -22,20 +31,28 @@ jQuery(document).ready(function($) {
         console.error('Invalid exchange rate data:', e);
         conversionRates = { USD: 1 };
     }
+    const termDiscounts = {};
+    const $termDiscounts = $('#dbw-term-discounts');
 
-    const currencySymbols = {
-        USD: '$',
-        EUR: '€',
-        NOK: 'kr'
-    };
-    const getCurrencySymbol = (code) => currencySymbols[code] || code;
+    try {
+        const rawTermDiscounts = JSON.parse($termDiscounts.attr('data-discounts'));
+        for (const [term, discount] of Object.entries(rawTermDiscounts)) {
+            termDiscounts[term] = parseFloat(discount);
+        }
+    } catch (e) {
+        console.error('Invalid term discount data:', e);
+    }
 
     function updateSummary() {
         let priceBeforeDiscount = 0;
         let totalInstanceQuantity = 0;
         const selectedCurrency = $currencySelector.val();
-
-        $calcFieldsTypes.each(function() {
+    
+        const currencySymbols = { USD: '$', EUR: '€', NOK: 'kr' };
+        const getCurrencySymbol = (code) => currencySymbols[code] || code;
+        const convertToCurrency = (amount) => (amount * conversionRates[selectedCurrency]).toFixed(2);
+    
+        $calcFieldsTypes.each(function () {
             const val = parseInt($(this).val(), 10);
             if (val > 0) {
                 const name = $(this).attr('name');
@@ -43,82 +60,71 @@ jQuery(document).ready(function($) {
                 totalInstanceQuantity += val;
             }
         });
-
-        $calcFieldsAddons.each(function() {
+    
+        $calcFieldsAddons.each(function () {
             const val = parseInt($(this).val(), 10);
             if (val > 0) {
                 const name = $(this).attr('name');
                 priceBeforeDiscount += val * dbwCostCalcData.addons[name].price;
             }
         });
-
+    
         let discount = 0;
         for (const rate of dbwCostCalcData.discountRates) {
             if (totalInstanceQuantity >= rate.minQty) {
                 discount = rate.discount;
             }
         }
-
+    
         const discountAmount = priceBeforeDiscount * discount;
-        let priceAfterDiscount = priceBeforeDiscount - discountAmount;
-
+        const priceAfterDiscount = priceBeforeDiscount - discountAmount;
+    
         const supportLevel = $supportRadios.filter(':checked').val();
-        let supportPercent = 0;
-
-        if (supportLevel === 'advanced') {
-            supportPercent = 15;
-        } else if (supportLevel === 'premium') {
-            supportPercent = 25;
-        }
-
+        const supportPercent = supportPercentages[supportLevel] || 0;
+    
         const supportIncrease = priceAfterDiscount * (supportPercent / 100);
-        priceAfterDiscount += supportIncrease;
-
-        // Get selected subscription term (1, 3, or 5)
+        const finalPriceAfterSupport = priceAfterDiscount + supportIncrease;
+    
         const subscriptionTerm = parseInt($('#subscription-term').val(), 10);
-
-        // Total cost across selected years
-        const totalPriceForTerm = priceAfterDiscount * subscriptionTerm;
-
-        const totalPricePerInstance = totalInstanceQuantity > 0 ? priceAfterDiscount / totalInstanceQuantity : 0;
-        const totalPricePerMonth = priceAfterDiscount / 12;
-
-        // Convert to selected currency
-        const convertToCurrency = (amount) => (amount * conversionRates[selectedCurrency]).toFixed(2);
-
-        // Update labels
+        const termDiscount = termDiscounts[subscriptionTerm] || 0;
+        const termDiscountAmount = finalPriceAfterSupport * termDiscount;
+        const finalPriceAfterTermDiscount = finalPriceAfterSupport - termDiscountAmount;
+    
+        const totalPriceForTerm = finalPriceAfterTermDiscount * subscriptionTerm;
+        const totalPricePerInstance = totalInstanceQuantity > 0 ? finalPriceAfterTermDiscount / totalInstanceQuantity : 0;
+        const totalPricePerMonth = finalPriceAfterTermDiscount / 12;
+    
+        // 🟡 Use CURRENCY CODE in the summary block
         $('#price-before-discount').text(`${selectedCurrency} ${convertToCurrency(priceBeforeDiscount)}`);
         $('#discount-amount').text(`${selectedCurrency} ${convertToCurrency(discountAmount)}`);
+        $('#support-plan-increase').text(`${selectedCurrency} ${convertToCurrency(supportIncrease)}`);
+        $('#term-discount').text(`${selectedCurrency} ${convertToCurrency(termDiscountAmount)}`);
         $('#total-price-per-instance').text(`${selectedCurrency} ${convertToCurrency(totalPricePerInstance)}`);
         $('#total-price-per-month').text(`${selectedCurrency} ${convertToCurrency(totalPricePerMonth)}`);
-
-        // Update label and value based on term
+    
         if (subscriptionTerm > 1) {
             $('#total-price-label').text(`Total price for ${subscriptionTerm} years`);
-            $('#price-after-discount').text(`${selectedCurrency} ${convertToCurrency(totalPriceForTerm)}`);
         } else {
             $('#total-price-label').text('Total price per year');
-            $('#price-after-discount').text(`${selectedCurrency} ${convertToCurrency(priceAfterDiscount)}`);
         }
-        // Convert and update each addon label price
+    
+        $('#price-after-discount').text(`${selectedCurrency} ${convertToCurrency(totalPriceForTerm)}`);
+    
+        // 🟢 Use CURRENCY SYMBOLS for package/add-on label display
         $('.label-desc').each(function () {
             const $desc = $(this);
             const usdPrice = parseFloat($desc.data('usd-price'));
-            const selectedCurrency = $currencySelector.val();
-
             if (isNaN(usdPrice)) return;
-
+    
             const rate = conversionRates[selectedCurrency] ?? 1;
             const converted = (usdPrice * rate).toFixed(2);
-
-            // Try to extract "for XYZ" part from current text
+    
             const currentText = $desc.text();
             const platformMatch = currentText.match(/for\s(.+)$/i);
             const platformText = platformMatch ? platformMatch[1] : '';
-
+    
             $desc.text(`(${getCurrencySymbol(selectedCurrency)}${converted}) for ${platformText}`);
         });
-        
     }
 
     // Expand/collapse toggle
@@ -320,7 +326,7 @@ jQuery(document).ready(function($) {
     });
 
     updateSummary();
-});
+}); 
 
 
 

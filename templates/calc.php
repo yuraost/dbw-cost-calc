@@ -16,6 +16,10 @@ defined('ABSPATH') || exit;
             <option value="NOK">NOK</option>
         </select>
     </div>
+    <?php
+    $term_discounts = get_option('dbw-cost-calculator-term-discounts', ['1' => 0, '3' => 0, '5' => 0]);
+    ?>
+    <div id="dbw-term-discounts" data-discounts='<?php echo json_encode($term_discounts); ?>'></div>
 	<div class="dbw-cost-calc-fields">
 		<div class="dbw-cost-calc-fields-col dbw-cost-calc-shadow">
             <h2 class="dbw-cost-calc-fields-col-title">Instance Types</h2>
@@ -142,7 +146,7 @@ defined('ABSPATH') || exit;
                             <?php endforeach; ?>
                         </ul>
                         <div class="support-footer">
-                            <div class="support-price">
+                            <div class="support-price" data-support-key="<?= esc_attr($key); ?>" data-percent="<?= esc_attr($level['percent']); ?>">
                                 <?= $key === 'basic' ? 'No additional cost' : '+ ' . esc_html($level['percent']) . '%'; ?>
                             </div>
                             <?php if (!empty($level['learn_more'])): ?>
@@ -182,6 +186,14 @@ defined('ABSPATH') || exit;
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Volume discount</span>
             <span class="summary-item-val" id="discount-amount"></span>
+        </div>
+        <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
+            <span>Term discount</span>
+            <span class="summary-item-val" id="term-discount"></span>
+        </div>
+        <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
+            <span>Support plan increase</span>
+            <span class="summary-item-val" id="support-plan-increase"></span>
         </div>
         <div class="dbw-cost-calc-summary-item dbw-cost-calc-shadow">
             <span>Yearly price per instance</span>
