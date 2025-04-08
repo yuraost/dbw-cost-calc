@@ -33,6 +33,14 @@ defined('ABSPATH') || exit;
             <option value="NOK">NOK</option>
         </select>
     </div>
+    <?php
+    $term_discounts = get_option('dbw-cost-calculator-term-discounts', [
+        '1' => 0,
+        '3' => 0.10,
+        '5' => 0.15
+    ]);
+    ?>
+    <div id="dbw-term-discounts" data-discounts='<?php echo json_encode($term_discounts); ?>'></div>
 	<div class="dbw-cost-calc-fields">
 		<div class="dbw-cost-calc-fields-col dbw-cost-calc-shadow">
             <h2 class="dbw-cost-calc-fields-col-title">Instance Types</h2>
