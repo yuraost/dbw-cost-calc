@@ -89,4 +89,5 @@ jQuery(document).ready(function($) {
         removeRow($(this).closest('tr'), true);
         return false;
     });
+    
 });

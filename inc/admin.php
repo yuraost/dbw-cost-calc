@@ -98,8 +98,306 @@ function dbw_cost_calc_settings_fields()
 		'dbw-cost-calculator',
 		'dbw-cost-calculator-section'
 	);
+
+	// Register and display support levels
+	register_setting('dbw-cost-calculator-group', 'dbw-cost-calculator-support-levels', 'dbw_cost_calc_settings_field_support_levels_sanitize');
+	add_settings_field(
+		'dbw-cost-calculator-support-levels',
+		'Support Levels',
+		'dbw_cost_calc_settings_field_support_levels',
+		'dbw-cost-calculator',
+		'dbw-cost-calculator-section'
+	);
+	register_setting(
+		'dbw-cost-calculator-group',
+		'dbw-cost-calculator-term-discounts',
+		'dbw_cost_calc_settings_field_term_discounts_sanitize'
+	);
+	
+	add_settings_field(
+		'dbw-cost-calculator-term-discounts',
+		'Term Discounts',
+		'dbw_cost_calc_settings_field_term_discounts',
+		'dbw-cost-calculator',
+		'dbw-cost-calculator-section'
+	);
+
+    register_setting('dbw-cost-calculator-group', 'dbw-cost-calculator-currencies', 'dbw_cost_calc_settings_field_currencies_sanitize');
+    add_settings_field(
+        'dbw-cost-calculator-currencies',
+        'Currency Conversion Rates',
+        'dbw_cost_calc_settings_field_currencies',
+        'dbw-cost-calculator',
+        'dbw-cost-calculator-section'
+    );
 }
 
+/**
+ * Display the Support Levels settings fields in the admin panel.
+ *
+ * This function outputs a table with input fields for configuring 
+ * percentage price increases for each support level (Basic, Advanced, Premium).
+ */
+function dbw_cost_calc_settings_field_support_levels() {
+    // Retrieve the settings option, ensuring it's an array
+    $support_levels_raw = get_option('dbw-cost-calculator-support-levels', []);
+
+    // If $support_levels_raw isn't an array, initialize it as an empty array
+    if (!is_array($support_levels_raw)) {
+        // If the data is corrupted, delete and reset to default
+        delete_option('dbw-cost-calculator-support-levels');
+        $support_levels_raw = [];
+    }
+
+    // Define default settings for support levels
+    $defaults = [
+        'basic' => [
+            'title' => 'Basic Support', 
+            'percent' => 0, 
+            'learn_more' => '', 
+            'features' => []
+        ],
+        'advanced' => [
+            'title' => 'Advanced Support', 
+            'percent' => 10, 
+            'learn_more' => '', 
+            'features' => []
+        ],
+        'premium' => [
+            'title' => 'Premium Support', 
+            'percent' => 25, 
+            'learn_more' => '', 
+            'features' => []
+        ]
+    ];
+
+    // Merge saved settings with defaults
+    $support_levels = wp_parse_args($support_levels_raw, $defaults);
+
+    // Ensure each support level (basic, advanced, premium) is an array
+    foreach (['basic', 'advanced', 'premium'] as $key) {
+        if (!isset($support_levels[$key]) || !is_array($support_levels[$key])) {
+            $support_levels[$key] = $defaults[$key]; // Fallback to default if not an array
+        }
+    }
+
+    ?>
+
+    <h4>Support Level Settings</h4>
+    <table class="dbw-cost-calc-settings-table widefat">
+        <thead>
+            <tr>
+                <th>Support Key</th>
+                <th>Title</th>
+                <th>Price Increase (%)</th>
+                <th>Learn More URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach (['basic', 'advanced', 'premium'] as $key):
+                $level = isset($support_levels[$key]) && is_array($support_levels[$key]) ? $support_levels[$key] : [];
+            ?>
+                <tr>
+                    <td><strong><?= ucfirst($key); ?></strong></td>
+                    <td><input type="text" name="dbw-cost-calculator-support-levels[<?= $key; ?>][title]" value="<?= esc_attr($level['title'] ?? ''); ?>" class="regular-text" /></td>
+                    <td><input type="number" name="dbw-cost-calculator-support-levels[<?= $key; ?>][percent]" value="<?= esc_attr($level['percent'] ?? 0); ?>" style="width: 80px;" /></td>
+                    <td><input type="url" name="dbw-cost-calculator-support-levels[<?= $key; ?>][learn_more]" value="<?= esc_url($level['learn_more'] ?? ''); ?>" class="regular-text" /></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <h4 style="margin-top:2em;">Features for Each Support Level</h4>
+
+    <!-- Basic Support Level Features -->
+    <h5>Basic Support Features</h5>
+    <table class="support-feature-table widefat">
+        <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Included</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="basic-feature-list">
+            <?php foreach ($support_levels['basic']['features'] as $index => $feature): ?>
+                <tr>
+                    <td><input type="text" name="dbw-cost-calculator-support-levels[basic][features][<?= $index; ?>][text]" value="<?= esc_attr($feature['text']); ?>" class="regular-text" /></td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="dbw-cost-calculator-support-levels[basic][features][<?= $index; ?>][included]" <?= !empty($feature['included']) ? 'checked' : ''; ?> />
+                    </td>
+                    <td><a href="#" class="button button-secondary remove-feature">Remove</a></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">
+                    <a href="#" class="button button-primary" id="add-basic-feature-row">Add Feature</a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <!-- Advanced Support Level Features -->
+    <h5>Advanced Support Features</h5>
+    <table class="support-feature-table widefat">
+        <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Included</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="advanced-feature-list">
+            <?php foreach ($support_levels['advanced']['features'] as $index => $feature): ?>
+                <tr>
+                    <td><input type="text" name="dbw-cost-calculator-support-levels[advanced][features][<?= $index; ?>][text]" value="<?= esc_attr($feature['text']); ?>" class="regular-text" /></td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="dbw-cost-calculator-support-levels[advanced][features][<?= $index; ?>][included]" <?= !empty($feature['included']) ? 'checked' : ''; ?> />
+                    </td>
+                    <td><a href="#" class="button button-secondary remove-feature">Remove</a></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">
+                    <a href="#" class="button button-primary" id="add-advanced-feature-row">Add Feature</a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <!-- Premium Support Level Features -->
+    <h5>Premium Support Features</h5>
+    <table class="support-feature-table widefat">
+        <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Included</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="premium-feature-list">
+            <?php foreach ($support_levels['premium']['features'] as $index => $feature): ?>
+                <tr>
+                    <td><input type="text" name="dbw-cost-calculator-support-levels[premium][features][<?= $index; ?>][text]" value="<?= esc_attr($feature['text']); ?>" class="regular-text" /></td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="dbw-cost-calculator-support-levels[premium][features][<?= $index; ?>][included]" <?= !empty($feature['included']) ? 'checked' : ''; ?> />
+                    </td>
+                    <td><a href="#" class="button button-secondary remove-feature">Remove</a></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">
+                    <a href="#" class="button button-primary" id="add-premium-feature-row">Add Feature</a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add Feature Button for Basic Support
+        document.getElementById('add-basic-feature-row').addEventListener('click', function (e) {
+            e.preventDefault();
+            const featureList = document.getElementById('basic-feature-list');
+            const index = featureList.querySelectorAll('tr').length;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" name="dbw-cost-calculator-support-levels[basic][features][${index}][text]" class="regular-text" /></td>
+                <td style="text-align: center;"><input type="checkbox" name="dbw-cost-calculator-support-levels[basic][features][${index}][included]" /></td>
+                <td><a href="#" class="button button-secondary remove-feature">Remove</a></td>
+            `;
+            featureList.appendChild(row);
+        });
+
+        // Add Feature Button for Advanced Support
+        document.getElementById('add-advanced-feature-row').addEventListener('click', function (e) {
+            e.preventDefault();
+            const featureList = document.getElementById('advanced-feature-list');
+            const index = featureList.querySelectorAll('tr').length;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" name="dbw-cost-calculator-support-levels[advanced][features][${index}][text]" class="regular-text" /></td>
+                <td style="text-align: center;"><input type="checkbox" name="dbw-cost-calculator-support-levels[advanced][features][${index}][included]" /></td>
+                <td><a href="#" class="button button-secondary remove-feature">Remove</a></td>
+            `;
+            featureList.appendChild(row);
+        });
+
+        // Add Feature Button for Premium Support
+        document.getElementById('add-premium-feature-row').addEventListener('click', function (e) {
+            e.preventDefault();
+            const featureList = document.getElementById('premium-feature-list');
+            const index = featureList.querySelectorAll('tr').length;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" name="dbw-cost-calculator-support-levels[premium][features][${index}][text]" class="regular-text" /></td>
+                <td style="text-align: center;"><input type="checkbox" name="dbw-cost-calculator-support-levels[premium][features][${index}][included]" /></td>
+                <td><a href="#" class="button button-secondary remove-feature">Remove</a></td>
+            `;
+            featureList.appendChild(row);
+        });
+
+        // Remove Feature
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-feature')) {
+                e.preventDefault();
+                const row = e.target.closest('tr');
+                const featureList = row.closest('tbody');
+                if (featureList.querySelectorAll('tr').length > 1) {
+                    row.remove();
+                } else {
+                    alert('At least one feature must remain.');
+                }
+            }
+        });
+    });
+    </script>
+
+<?php
+}
+
+
+/**
+ * Sanitize the support levels input before saving to the database.
+ *
+ * Ensures all values submitted are converted to safe, valid floats.
+ *
+ */
+function dbw_cost_calc_settings_field_support_levels_sanitize($levels) {
+    $sanitized = [];
+
+    // Loop through each support level (basic, advanced, premium)
+    foreach ($levels as $key => $level) {
+        // Sanitize title, percentage and learn_more URL
+        $sanitized[$key] = [
+            'title' => sanitize_text_field($level['title']),
+            'percent' => floatval($level['percent']), // Ensure percent is a float
+            'learn_more' => esc_url_raw($level['learn_more']), // Sanitize URL
+            'features' => [] // Initialize features array
+        ];
+
+        // If features are provided, sanitize each feature
+        if (!empty($level['features']) && is_array($level['features'])) {
+            foreach ($level['features'] as $feature) {
+                $sanitized[$key]['features'][] = [
+                    'text' => sanitize_text_field($feature['text']), // Sanitize feature text
+                    'included' => isset($feature['included']) ? (bool)$feature['included'] : false // Convert to boolean
+                ];
+            }
+        }
+    }
+
+    return $sanitized; // Return sanitized data
+}
 /**
  * Display the instance types settings field
  */
@@ -433,3 +731,55 @@ function dbw_cost_calculator_notices()
         <?php
     }
 }
+
+function dbw_cost_calc_settings_field_term_discounts() {
+    $discounts = get_option('dbw-cost-calculator-term-discounts', array('1' => 0, '3' => 0, '5' => 0));
+    ?>
+    <label>
+        1-Year Discount:
+        <input type="number" step="0.01" min="0" max="1" name="dbw-cost-calculator-term-discounts[1]" value="<?php echo esc_attr($discounts['1']); ?>" />
+    </label>
+    <br>
+    <label>
+        3-Year Discount:
+        <input type="number" step="0.01" min="0" max="1" name="dbw-cost-calculator-term-discounts[3]" value="<?php echo esc_attr($discounts['3']); ?>" />
+    </label>
+    <br>
+    <label>
+        5-Year Discount:
+        <input type="number" step="0.01" min="0" max="1" name="dbw-cost-calculator-term-discounts[5]" value="<?php echo esc_attr($discounts['5']); ?>" />
+    </label>
+    <p class="description">Enter values like 0.1 for 10% discount. Max is 1 (100%).</p>
+    <?php
+}
+
+function dbw_cost_calc_settings_field_term_discounts_sanitize($input) {
+    $output = array();
+    foreach (array('1', '3', '5') as $term) {
+        $val = isset($input[$term]) ? floatval($input[$term]) : 0;
+        $output[$term] = ($val >= 0 && $val <= 1) ? $val : 0;
+    }
+    return $output;
+}
+
+function dbw_cost_calc_settings_field_currencies() {
+    $currencies = get_option('dbw-cost-calculator-currencies', []);
+    $defaults = ['USD' => 1, 'EUR' => 0.9, 'NOK' => 10];
+
+    $currencies = wp_parse_args($currencies, $defaults);
+
+    foreach ($defaults as $code => $default) {
+        $value = esc_attr($currencies[$code]);
+        echo "<p><label for='currency_$code'>$code: </label> ";
+        echo "<input type='number' step='0.01' name='dbw-cost-calculator-currencies[$code]' id='currency_$code' value='$value' /></p>";
+    }
+}
+
+function dbw_cost_calc_settings_field_currencies_sanitize($input) {
+    $sanitized = [];
+    foreach ($input as $code => $rate) {
+        $sanitized[$code] = floatval($rate);
+    }
+    return $sanitized;
+}
+
