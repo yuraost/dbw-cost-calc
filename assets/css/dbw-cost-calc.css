@@ -501,6 +501,7 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 
 .dbw-cost-calc-footer {
     border-top: 1px solid #ddd;
+    width: 99%;
 }
 
 .select-footer-block {
