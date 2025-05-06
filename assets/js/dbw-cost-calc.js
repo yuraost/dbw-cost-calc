@@ -8,15 +8,14 @@ jQuery(document).ready(function($) {
     const $termsToggle = $('.dbw-cost-calc-terms-title');
     const $supportRadios = $form.find('input[name="support_level"]');
     const $supportBlocks = $('#support-levels-container label');
-    const $currencySelector = $('#currency'); // Currency selector element
+    const $currencySelector = $('#currency');
     const geoDefaultCurrency = $('#geo-default-currency').data('default-currency');
+
     if (geoDefaultCurrency && $currencySelector.length) {
         $currencySelector.val(geoDefaultCurrency).trigger('change');
     }
 
-    let conversionRates = {};
     const supportPercentages = {};
-
     $('.support-price').each(function () {
         const key = $(this).data('support-key');
         const percent = parseFloat($(this).data('percent'));
@@ -24,20 +23,9 @@ jQuery(document).ready(function($) {
             supportPercentages[key] = percent;
         }
     });
-    const $exchangeRates = $('#dbw-exchange-rates');
 
-    try {
-        const rawRates = JSON.parse($exchangeRates.attr('data-rates'));
-        for (const [currency, rate] of Object.entries(rawRates)) {
-            conversionRates[currency] = parseFloat(rate);
-        }
-    } catch (e) {
-        console.error('Invalid exchange rate data:', e);
-        conversionRates = { USD: 1 };
-    }
     const termDiscounts = {};
     const $termDiscounts = $('#dbw-term-discounts');
-
     try {
         const rawTermDiscounts = JSON.parse($termDiscounts.attr('data-discounts'));
         for (const [term, discount] of Object.entries(rawTermDiscounts)) {
@@ -51,87 +39,90 @@ jQuery(document).ready(function($) {
         let priceBeforeDiscount = 0;
         let totalInstanceQuantity = 0;
         const selectedCurrency = $currencySelector.val();
-    
+
         const currencySymbols = { USD: '$', EUR: '€', NOK: 'kr' };
         const getCurrencySymbol = (code) => currencySymbols[code] || code;
-        const convertToCurrency = (amount) => (amount * conversionRates[selectedCurrency]).toFixed(2);
-    
+
+        // Calculate instance totals
         $calcFieldsTypes.each(function () {
             const val = parseInt($(this).val(), 10);
             if (val > 0) {
-                const name = $(this).attr('name');
-                priceBeforeDiscount += val * dbwCostCalcData.instances[name].price;
-                totalInstanceQuantity += val;
+                const $labelDesc = $(this).closest('.dbw-cost-calc-field').find('.label-desc');
+                const pricePerUnit = parseFloat($labelDesc.data(selectedCurrency.toLowerCase() + '-price'));
+                if (!isNaN(pricePerUnit)) {
+                    priceBeforeDiscount += val * pricePerUnit;
+                    totalInstanceQuantity += val;
+                }
             }
         });
-    
+
+        // Calculate addon totals
         $calcFieldsAddons.each(function () {
             const val = parseInt($(this).val(), 10);
             if (val > 0) {
-                const name = $(this).attr('name');
-                priceBeforeDiscount += val * dbwCostCalcData.addons[name].price;
+                const $labelDesc = $(this).closest('.dbw-cost-calc-field').find('.label-desc');
+                const pricePerUnit = parseFloat($labelDesc.data(selectedCurrency.toLowerCase() + '-price'));
+                if (!isNaN(pricePerUnit)) {
+                    priceBeforeDiscount += val * pricePerUnit;
+                }
             }
         });
-    
+
         let discount = 0;
         for (const rate of dbwCostCalcData.discountRates) {
             if (totalInstanceQuantity >= rate.minQty) {
                 discount = rate.discount;
             }
         }
-    
+
         const discountAmount = priceBeforeDiscount * discount;
         const priceAfterDiscount = priceBeforeDiscount - discountAmount;
-    
+
         const supportLevel = $supportRadios.filter(':checked').val();
         const supportPercent = supportPercentages[supportLevel] || 0;
-    
+
         const supportIncrease = priceAfterDiscount * (supportPercent / 100);
         const finalPriceAfterSupport = priceAfterDiscount + supportIncrease;
-    
+
         const subscriptionTerm = parseInt($('#subscription-term').val(), 10);
         const termDiscount = termDiscounts[subscriptionTerm] || 0;
         const termDiscountAmount = finalPriceAfterSupport * termDiscount;
         const finalPriceAfterTermDiscount = finalPriceAfterSupport - termDiscountAmount;
-    
+
         const totalPriceForTerm = finalPriceAfterTermDiscount * subscriptionTerm;
         const totalPricePerInstance = totalInstanceQuantity > 0 ? finalPriceAfterTermDiscount / totalInstanceQuantity : 0;
         const totalPricePerMonth = finalPriceAfterTermDiscount / 12;
-    
-        // 🟡 Use CURRENCY CODE in the summary block
-        $('#price-before-discount').text(`${selectedCurrency} ${convertToCurrency(priceBeforeDiscount)}`);
-        $('#discount-amount').text(`${selectedCurrency} ${convertToCurrency(discountAmount)}`);
-        $('#support-plan-increase').text(`${selectedCurrency} ${convertToCurrency(supportIncrease)}`);
-        $('#term-discount').text(`${selectedCurrency} ${convertToCurrency(termDiscountAmount)}`);
-        $('#total-price-per-instance').text(`${selectedCurrency} ${convertToCurrency(totalPricePerInstance)}`);
-        $('#total-price-per-month').text(`${selectedCurrency} ${convertToCurrency(totalPricePerMonth)}`);
-    
+
+        // Update summary
+        $('#price-before-discount').text(`${selectedCurrency} ${priceBeforeDiscount.toFixed(2)}`);
+        $('#discount-amount').text(`${selectedCurrency} ${discountAmount.toFixed(2)}`);
+        $('#support-plan-increase').text(`${selectedCurrency} ${supportIncrease.toFixed(2)}`);
+        $('#term-discount').text(`${selectedCurrency} ${termDiscountAmount.toFixed(2)}`);
+        $('#total-price-per-instance').text(`${selectedCurrency} ${totalPricePerInstance.toFixed(2)}`);
+        $('#total-price-per-month').text(`${selectedCurrency} ${totalPricePerMonth.toFixed(2)}`);
+
         if (subscriptionTerm > 1) {
             $('#total-price-label').text(`Total price for ${subscriptionTerm} years`);
         } else {
             $('#total-price-label').text('Total price per year');
         }
-    
-        $('#price-after-discount').text(`${selectedCurrency} ${convertToCurrency(totalPriceForTerm)}`);
-    
-        // Use CURRENCY SYMBOLS for package/add-on label display
+
+        $('#price-after-discount').text(`${selectedCurrency} ${totalPriceForTerm.toFixed(2)}`);
+
+        // Update display labels for addons and instances
         $('.label-desc').each(function () {
             const $desc = $(this);
-            const usdPrice = parseFloat($desc.data('usd-price'));
-            if (isNaN(usdPrice)) return;
-    
-            const rate = conversionRates[selectedCurrency] ?? 1;
-            const converted = (usdPrice * rate).toFixed(2);
-    
-            const currentText = $desc.text();
-            const platformMatch = currentText.match(/for\s(.+)$/i);
-            const platformText = platformMatch ? platformMatch[1] : '';
-    
-            $desc.text(`(${getCurrencySymbol(selectedCurrency)}${converted}) for ${platformText}`);
+            const price = parseFloat($desc.data(selectedCurrency.toLowerCase() + '-price'));
+            if (!isNaN(price)) {
+                const currentText = $desc.text();
+                const platformMatch = currentText.match(/for\s(.+)$/i);
+                const platformText = platformMatch ? platformMatch[1] : '';
+                $desc.text(`(${getCurrencySymbol(selectedCurrency)}${price.toFixed(2)}) for ${platformText}`);
+            }
         });
     }
 
-    // Expand/collapse toggle
+    // Support block toggle
     $supportBlocks.each(function() {
         const $this = $(this);
         const $header = $this.find('.support-header');
@@ -155,46 +146,32 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Highlight only main support blocks (not footer blocks)
+    // Highlight support selection
     $supportRadios.on('change', function() {
         const selectedValue = $(this).val();
-
         $supportBlocks.each(function() {
             const $block = $(this);
             const $radio = $block.find('input[type="radio"]');
-
-            if ($radio.val() === selectedValue) {
-                $block.addClass('selected');
-            } else {
-                $block.removeClass('selected');
-            }
+            $block.toggleClass('selected', $radio.val() === selectedValue);
         });
-
         updateSummary();
     });
 
-    // Make entire support block clickable/selectable
     $supportBlocks.on('click', function(e) {
         if (!$(e.target).is('input[type="radio"]')) {
             const $radio = $(this).find('input[type="radio"]');
             $radio.prop('checked', true).trigger('change');
         }
     });
-    
-    // Initial support highlight
+
     const $checkedSupport = $supportRadios.filter(':checked');
     if ($checkedSupport.length) {
         $checkedSupport.closest('label').addClass('selected');
     }
 
-    // Update prices when user interacts with any calculation fields or subscription term
     $calcFieldsTypes.add($calcFieldsAddons).on('input', updateSummary);
     $('#subscription-term').on('change', updateSummary);
-
-    // Handle currency selection change
-    $currencySelector.on('change', function() {
-        updateSummary();
-    });
+    $currencySelector.on('change', updateSummary);
 
     $quoteBtn.on('click', function(e) {
         e.preventDefault();
@@ -296,46 +273,5 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // Footer radio block
-    $('.select-footer-block input[type="radio"]').on('change', function() {
-        const $label = $(this).closest('label');
-        const $span = $label.find('span');
-
-        $('.select-footer-block input[type="radio"]').each(function() {
-            const $otherLabel = $(this).closest('label');
-            const $otherSpan = $otherLabel.find('span');
-            if (!$(this).is(':checked')) {
-                $otherSpan.text('Choose');
-            }
-        });
-
-        if ($(this).is(':checked')) {
-            $span.text('Selected Support')
-        }
-    });
-
-    // Preselect first footer block 
-    const $firstRadio = $('.select-footer-block input[type="radio"]').first();
-    const $firstLabel = $firstRadio.closest('label');
-    const $firstSpan = $firstLabel.find('span');
-    $firstRadio.prop('checked', true);
-    $firstSpan.text('Selected');
-
-    // Reset toggle state
-    $supportBlocks.each(function() {
-        const $block = $(this);
-        $block.removeClass('open');
-        $block.find('.support-features').hide();
-        $block.find('.toggle-icon').removeClass('rotate');
-    });
-
     updateSummary();
-}); 
-
-
-
-
-
-
-
-
+});

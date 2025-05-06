@@ -122,9 +122,8 @@ function dbw_cost_calc_settings_fields()
 		'dbw-cost-calculator-section'
 	);
 
-    register_setting('dbw-cost-calculator-group', 'dbw-cost-calculator-currencies', 'dbw_cost_calc_settings_field_currencies_sanitize');
+    register_setting('dbw-cost-calculator-group',  'dbw_cost_calc_settings_field_currencies_sanitize');
     add_settings_field(
-        'dbw-cost-calculator-currencies',
         'Currency Conversion Rates',
         'dbw_cost_calc_settings_field_currencies',
         'dbw-cost-calculator',
@@ -404,27 +403,31 @@ function dbw_cost_calc_settings_field_support_levels_sanitize($levels) {
 function dbw_cost_calc_settings_field_instance_types()
 {
     $types_raw = get_option('dbw-cost-calculator-instance-types');
-	$types = [];
-	if (!empty($types_raw['name']) && is_array($types_raw['name']) &&
-		!empty($types_raw['price']) && is_array($types_raw['price']) &&
-		count($types_raw['name']) === count($types_raw['price'])
-	) {
-		for ($i = 0; $i < count($types_raw['name']); $i++) {
-			$types[] = [
-				'name' => $types_raw['name'][$i],
-				'price' => $types_raw['price'][$i],
-				'link_label' => $types_raw['link_label'][$i] ?? '',
-				'link_url' => $types_raw['link_url'][$i] ?? ''
-			];
-		}
-	} else {
-		$types[] = [
-			'name' => '',
-			'price' => '',
-			'link_label' => '',
-			'link_url' => ''
-		];
-	} ?>
+    $types = [];
+
+    if (!empty($types_raw['name']) && is_array($types_raw['name'])) {
+        $count = count($types_raw['name']);
+        for ($i = 0; $i < $count; $i++) {
+            $types[] = [
+                'name'        => $types_raw['name'][$i] ?? '',
+                'usd_price'   => $types_raw['usd_price'][$i] ?? '',
+                'eur_price'   => $types_raw['eur_price'][$i] ?? '',
+                'nok_price'   => $types_raw['nok_price'][$i] ?? '',
+                'link_label'  => $types_raw['link_label'][$i] ?? '',
+                'link_url'    => $types_raw['link_url'][$i] ?? ''
+            ];
+        }
+    } else {
+        $types[] = [
+            'name'        => '',
+            'usd_price'   => '',
+            'eur_price'   => '',
+            'nok_price'   => '',
+            'link_label'  => '',
+            'link_url'    => ''
+        ];
+    }
+    ?>
     <table class="dbw-cost-calc-settings-table">
         <thead>
             <tr>
@@ -438,17 +441,37 @@ function dbw_cost_calc_settings_field_instance_types()
         <tbody id="instance-types-list">
             <?php foreach ($types as $type) { ?>
                 <tr>
-                    <td><input type="text" name="dbw-cost-calculator-instance-types[name][]" value="<?= esc_attr($type['name']); ?>" required /></td>
-                    <td><input type="text" name="dbw-cost-calculator-instance-types[price][]" value="<?= esc_attr($type['price']); ?>" required /></td>
-                    <td><input type="text" name="dbw-cost-calculator-instance-types[link_label][]" value="<?= esc_attr($type['link_label']); ?>" /></td>
-                    <td><input type="text" name="dbw-cost-calculator-instance-types[link_url][]" value="<?= esc_attr($type['link_url']); ?>" /></td>
-                    <td><a class="button button-secondary remove-instance-type" href="#">Remove</a></td>
+                    <td>
+                        <input type="text" name="dbw-cost-calculator-instance-types[name][]" value="<?= esc_attr($type['name']); ?>" required />
+                    </td>
+                    <td>
+                        <span style="display: inline-block; margin-right: 10px;">
+                            USD: <input type="text" name="dbw-cost-calculator-instance-types[usd_price][]" value="<?= esc_attr($type['usd_price']); ?>" required />
+                        </span>
+                        <span style="display: inline-block; margin-right: 10px;">
+                            EUR: <input type="text" name="dbw-cost-calculator-instance-types[eur_price][]" value="<?= esc_attr($type['eur_price']); ?>" required />
+                        </span>
+                        <span style="display: inline-block; margin-right: 10px; margin-bottom:">
+                            NOK: <input type="text" name="dbw-cost-calculator-instance-types[nok_price][]" value="<?= esc_attr($type['nok_price']); ?>" required />
+                        </span>
+                    </td>
+                    <td>
+                        <input type="text" name="dbw-cost-calculator-instance-types[link_label][]" value="<?= esc_attr($type['link_label']); ?>" />
+                    </td>
+                    <td>
+                        <input type="text" name="dbw-cost-calculator-instance-types[link_url][]" value="<?= esc_attr($type['link_url']); ?>" />
+                    </td>
+                    <td>
+                        <a class="button button-secondary remove-instance-type" href="#">Remove</a>
+                    </td>
                 </tr>
             <?php } ?>
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3"><a id="add-instance-type" class="button button-primary" href="#">Add Instance Type</a></td>
+                <td colspan="5">
+                    <a id="add-instance-type" class="button button-primary" href="#">Add Instance Type</a>
+                </td>
             </tr>
         </tfoot>
     </table>
@@ -463,23 +486,29 @@ function dbw_cost_calc_settings_field_instance_types()
  */
 function dbw_cost_calc_settings_field_instance_types_sanitize($types)
 {
-	if (!empty($types['name']) && is_array($types['name']) &&
-		!empty($types['price']) && is_array($types['price']) &&
-        count($types['name']) === count($types['price'])
+    if (!empty($types['name']) && is_array($types['name']) &&
+        !empty($types['usd_price']) && is_array($types['usd_price']) &&
+        !empty($types['eur_price']) && is_array($types['eur_price']) &&
+        !empty($types['nok_price']) && is_array($types['nok_price']) &&
+        count($types['name']) === count($types['usd_price']) &&
+        count($types['name']) === count($types['eur_price']) &&
+        count($types['name']) === count($types['nok_price'])
     ) {
-	    $types['name'] = array_map('sanitize_text_field', $types['name']);
-	    $types['price'] = array_map('floatval', $types['price']);
+        $types['name'] = array_map('sanitize_text_field', $types['name']);
+        $types['usd_price'] = array_map('floatval', $types['usd_price']);
+        $types['eur_price'] = array_map('floatval', $types['eur_price']);
+        $types['nok_price'] = array_map('floatval', $types['nok_price']);
     } else {
         add_settings_error(
-			'dbw-cost-calculator-settings-errors',
-			'empty-value',
-			'Instance Types can\'t be empty.',
-			'error'
-		);
-		$types = get_option('dbw-cost-calculator-instance-types');
+            'dbw-cost-calculator-settings-errors',
+            'empty-value',
+            'Instance Types can\'t be empty.',
+            'error'
+        );
+        $types = get_option('dbw-cost-calculator-instance-types');
     }
 
-	return $types;
+    return $types;
 }
 
 /**
@@ -552,54 +581,86 @@ function dbw_cost_calc_settings_field_discount_rates_sanitize($rates)
  */
 function dbw_cost_calc_settings_field_addons()
 {
-	$addons_raw = get_option('dbw-cost-calculator-addons');
-	$addons = [];
-	if (!empty($addons_raw['name']) && is_array($addons_raw['name']) &&
-		!empty($addons_raw['price']) && is_array($addons_raw['price']) &&
-		!empty($addons_raw['platforms']) && is_array($addons_raw['platforms']) &&
-		count($addons_raw['name']) === count($addons_raw['price']) &&
-        count($addons_raw['name']) === count($addons_raw['platforms'])
-	) {
-		for ($i = 0; $i < count($addons_raw['name']); $i++) {
-			$addons[] = [
-				'name' => $addons_raw['name'][$i],
-				'price' => $addons_raw['price'][$i],
-                'platforms' => $addons_raw['platforms'][$i],
-				'link_label' => $addons_raw['link_label'][$i] ?? '',
-				'link_url' => $addons_raw['link_url'][$i] ?? '',
-			];
-		}
-	} ?>
+    $addons_raw = get_option('dbw-cost-calculator-addons');
+    $addons = [];
+
+    if (!empty($addons_raw['name']) && is_array($addons_raw['name'])) {
+        $count = count($addons_raw['name']);
+        for ($i = 0; $i < $count; $i++) {
+            $addons[] = [
+                'name'        => $addons_raw['name'][$i] ?? '',
+                'usd_price'   => $addons_raw['usd_price'][$i] ?? '',
+                'eur_price'   => $addons_raw['eur_price'][$i] ?? '',
+                'nok_price'   => $addons_raw['nok_price'][$i] ?? '',
+                'platforms'   => $addons_raw['platforms'][$i] ?? '',
+                'link_label'  => $addons_raw['link_label'][$i] ?? '',
+                'link_url'    => $addons_raw['link_url'][$i] ?? ''
+            ];
+        }
+    } else {
+        $addons[] = [
+            'name'        => '',
+            'usd_price'   => '',
+            'eur_price'   => '',
+            'nok_price'   => '',
+            'platforms'   => '',
+            'link_label'  => '',
+            'link_url'    => ''
+        ];
+    }
+    ?>
     <table class="dbw-cost-calc-settings-table">
         <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Platforms</th>
-            <th>Link Label</th>
-            <th>Link URL</th>
-            <th></th>
-        </tr>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Platforms</th>
+                <th>Link Label</th>
+                <th>Link URL</th>
+                <th></th>
+            </tr>
         </thead>
         <tbody id="addons-list">
             <?php foreach ($addons as $addon) { ?>
                 <tr>
-                    <td><input type="text" name="dbw-cost-calculator-addons[name][]" value="<?= esc_attr($addon['name']); ?>" required /></td>
-                    <td><input type="text" name="dbw-cost-calculator-addons[price][]" value="<?= esc_attr($addon['price']); ?>" required /></td>
-                    <td><input type="text" name="dbw-cost-calculator-addons[platforms][]" value="<?= esc_attr($addon['platforms']); ?>" required /></td>
-                    <td><input type="text" name="dbw-cost-calculator-addons[link_label][]" value="<?= esc_attr($addon['link_label']); ?>" /></td>
-                    <td><input type="text" name="dbw-cost-calculator-addons[link_url][]" value="<?= esc_attr($addon['link_url']); ?>" /></td>
-                    <td><a class="button button-secondary remove-addon" href="#">Remove</a></td>
+                    <td>
+                        <input type="text" name="dbw-cost-calculator-addons[name][]" value="<?= esc_attr($addon['name']); ?>" required />
+                    </td>
+                    <td>
+                        <span style="display: inline-block; margin-right: 10px;">
+                            USD: <input type="text" name="dbw-cost-calculator-addons[usd_price][]" value="<?= esc_attr($addon['usd_price']); ?>" required />
+                        </span>
+                        <span style="display: inline-block; margin-right: 10px;">
+                            EUR: <input type="text" name="dbw-cost-calculator-addons[eur_price][]" value="<?= esc_attr($addon['eur_price']); ?>" required />
+                        </span>
+                        <span style="display: inline-block; margin-right: 10px; margin-bottom: 15px;">
+                            NOK: <input type="text" name="dbw-cost-calculator-addons[nok_price][]" value="<?= esc_attr($addon['nok_price']); ?>" required />
+                        </span>
+                    </td>
+                    <td>
+                        <input type="text" name="dbw-cost-calculator-addons[platforms][]" value="<?= esc_attr($addon['platforms']); ?>" required />
+                    </td>
+                    <td>
+                        <input type="text" name="dbw-cost-calculator-addons[link_label][]" value="<?= esc_attr($addon['link_label']); ?>" />
+                    </td>
+                    <td>
+                        <input type="text" name="dbw-cost-calculator-addons[link_url][]" value="<?= esc_attr($addon['link_url']); ?>" />
+                    </td>
+                    <td>
+                        <a class="button button-secondary remove-addon" href="#">Remove</a>
+                    </td>
                 </tr>
             <?php } ?>
         </tbody>
         <tfoot>
-        <tr>
-            <td colspan="4"><a id="add-addon" class="button button-primary" href="#">Add Addon</a></td>
-        </tr>
+            <tr>
+                <td colspan="6">
+                    <a id="add-addon" class="button button-primary" href="#">Add Addon</a>
+                </td>
+            </tr>
         </tfoot>
     </table>
-	<?php
+    <?php
 }
 
 /**
@@ -610,20 +671,34 @@ function dbw_cost_calc_settings_field_addons()
  */
 function dbw_cost_calc_settings_field_addons_sanitize($addons)
 {
-	if (!empty($addons['name']) && is_array($addons['name']) &&
-		!empty($addons['price']) && is_array($addons['price']) &&
-		!empty($addons['platforms']) && is_array($addons['platforms']) &&
-		count($addons['name']) === count($addons['price']) &&
-		count($addons['name']) === count($addons['platforms'])
-	) {
-		$addons['name'] = array_map('sanitize_text_field', $addons['name']);
-		$addons['price'] = array_map('floatval', $addons['price']);
-		$addons['platforms'] = array_map('sanitize_text_field', $addons['platforms']);
-	} else {
-		$addons = [];
-	}
+    if (!empty($addons['name']) && is_array($addons['name']) &&
+        !empty($addons['usd_price']) && is_array($addons['usd_price']) &&
+        !empty($addons['eur_price']) && is_array($addons['eur_price']) &&
+        !empty($addons['nok_price']) && is_array($addons['nok_price']) &&
+        !empty($addons['platforms']) && is_array($addons['platforms']) &&
+        count($addons['name']) === count($addons['usd_price']) &&
+        count($addons['name']) === count($addons['eur_price']) &&
+        count($addons['name']) === count($addons['nok_price']) &&
+        count($addons['name']) === count($addons['platforms'])
+    ) {
+        $addons['name'] = array_map('sanitize_text_field', $addons['name']);
+        $addons['usd_price'] = array_map('floatval', $addons['usd_price']);
+        $addons['eur_price'] = array_map('floatval', $addons['eur_price']);
+        $addons['nok_price'] = array_map('floatval', $addons['nok_price']);
+        $addons['platforms'] = array_map('sanitize_text_field', $addons['platforms']);
+        $addons['link_label'] = array_map('sanitize_text_field', $addons['link_label']);
+        $addons['link_url'] = array_map('esc_url_raw', $addons['link_url']);
+    } else {
+        add_settings_error(
+            'dbw-cost-calculator-settings-errors',
+            'invalid-addons',
+            'Addons data is incomplete or mismatched.',
+            'error'
+        );
+        $addons = get_option('dbw-cost-calculator-addons');
+    }
 
-	return $addons;
+    return $addons;
 }
 
 /**
@@ -760,19 +835,6 @@ function dbw_cost_calc_settings_field_term_discounts_sanitize($input) {
         $output[$term] = ($val >= 0 && $val <= 1) ? $val : 0;
     }
     return $output;
-}
-
-function dbw_cost_calc_settings_field_currencies() {
-    $currencies = get_option('dbw-cost-calculator-currencies', []);
-    $defaults = ['USD' => 1, 'EUR' => 0.9, 'NOK' => 10];
-
-    $currencies = wp_parse_args($currencies, $defaults);
-
-    foreach ($defaults as $code => $default) {
-        $value = esc_attr($currencies[$code]);
-        echo "<p><label for='currency_$code'>$code: </label> ";
-        echo "<input type='number' step='0.01' name='dbw-cost-calculator-currencies[$code]' id='currency_$code' value='$value' /></p>";
-    }
 }
 
 function dbw_cost_calc_settings_field_currencies_sanitize($input) {
