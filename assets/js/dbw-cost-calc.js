@@ -114,7 +114,7 @@ jQuery(document).ready(function($) {
     
         $('#price-after-discount').text(`${selectedCurrency} ${convertToCurrency(totalPriceForTerm)}`);
     
-        // 🟢 Use CURRENCY SYMBOLS for package/add-on label display
+        // Use CURRENCY SYMBOLS for package/add-on label display
         $('.label-desc').each(function () {
             const $desc = $(this);
             const usdPrice = parseFloat($desc.data('usd-price'));
@@ -305,12 +305,12 @@ jQuery(document).ready(function($) {
             const $otherLabel = $(this).closest('label');
             const $otherSpan = $otherLabel.find('span');
             if (!$(this).is(':checked')) {
-                $otherSpan.text('Select Block');
+                $otherSpan.text('Choose');
             }
         });
 
         if ($(this).is(':checked')) {
-            $span.text('Selected');
+            $span.text('Selected Support')
         }
     });
 

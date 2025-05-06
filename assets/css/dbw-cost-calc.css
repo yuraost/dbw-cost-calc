@@ -130,8 +130,8 @@ body .dbw-cost-calc-fields-col-title {
 }
 
 .dbw-cost-calc-summary {
+    margin-top: 50px;
     position: relative;
-    margin-top: 90px;
 }
 
 .dbw-cost-calc-summary:after {
@@ -148,7 +148,7 @@ body .dbw-cost-calc-fields-col-title {
 }
 
 body .dbw-cost-calc-summary .dbw-cost-calc-title {
-    margin-bottom: 95px;
+    margin-bottom: 55px;
 }
 
 .dbw-cost-calc-summary-item {
@@ -382,7 +382,7 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 #support-levels-container label {
     width: 320px;
     box-sizing: border-box;
-    padding: 0.5rem;
+    padding: 10px 20px;
     margin-top: 10px;
     border-radius: 25px;
     cursor: pointer;
@@ -410,7 +410,8 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 /* Header inside block */
 .support-header {
     font-weight: bold;
-    font-size: 1.7em;
+    font-size: 22px;
+    font-weight: bold;
     margin-bottom: 0.6em;
     position: relative;
     padding-right: 20px;
@@ -471,6 +472,7 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
     font-weight: bold;
     color: #663399;
     margin-right: 10px;
+    font-size: 14px;
 }
 
 .support-learn a {
@@ -502,6 +504,9 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 .dbw-cost-calc-footer {
     border-top: 1px solid #ddd;
     width: 99%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .select-footer-block {
@@ -522,12 +527,16 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
     border-radius: 4px;
     padding: 4px 10px;
     background-color: #f2f2f2;
+    font-size: 14px;
 }
 
 #support-levels-container label.selected {
     border: 2px solid #394494;
     border-radius: 25px;
-    padding: 10px;
+}
+
+.support-level-block.selected .support-header {
+    color: #394494;
 }
 
 .dbw-cost-calc-subscription-term {
@@ -538,18 +547,19 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 }
 
 .subscription-inner {
-    max-width: 300px;
+    max-width: 400px;
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 30px;
     align-items: center;
 }
 
 .subscription-inner label {
-    font-size: 22px;
+    width: 300px;
+    font-size: 16px;
     line-height: 122.5%;
     text-align: center;
-    margin-bottom: 50px;
     color: #394494;
     font-weight: bold;
 }
@@ -566,22 +576,36 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
         0 6.65px 5.32px 0 #2245B408,
          0 2.77px 2.21px 0 #2245B405;
 }
-.currency-selector label {
-    color: #394494; /* Set the label text color */
+
+.currency-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px auto;
 }
+
+.currency-selector label {
+    color: #394494;
+}
+
+label {
+    margin-bottom: 0 !important;
+}
+
 #currency {
+    padding: 10px;
     box-shadow: 0 100px 80px 0 #2245B412,
-     0 41.78px 33.42px 0 #2245B40D,
-      0 22.34px 17.87px 0 #2245B40A,
-       0 12.52px 10.02px 0 #2245B40A,
-        0 6.65px 5.32px 0 #2245B408,
-         0 2.77px 2.21px 0 #2245B405;
+                0 41.78px 33.42px 0 #2245B40D,
+                0 22.34px 17.87px 0 #2245B40A,
+                0 12.52px 10.02px 0 #2245B40A,
+                0 6.65px 5.32px 0 #2245B408,
+                0 2.77px 2.21px 0 #2245B405;
     border-bottom: 1px solid #394494;
 }
 select {
     font-weight: 600;
     border: none;
-    height: 2.5em !important;
 }
 
 
@@ -590,9 +614,12 @@ select {
         display: none;
     }
     #support-levels-container {
-        gap: 40px;
-        width: 90%;
+        gap: 20px;
+        width: 100%;
         margin: 0 auto;
+    }
+    #support-levels-container label {
+        width: 290px;
     }
 }
 
@@ -652,12 +679,8 @@ select {
         line-height: 122%;
     }
 
-    .dbw-cost-calc-summary {
-        margin-top: 70px;
-    }
-
     body .dbw-cost-calc-summary .dbw-cost-calc-title {
-        margin-bottom: 35px;
+        margin-bottom: 30px;
     }
 
     .dbw-cost-calc-summary-item {
@@ -737,14 +760,7 @@ select {
 
     #support-levels-container label {
         width: 100%;
-        max-width: 400px;
+        max-width: 290px;
         height: auto;
-    }
-    #support-header {
-        font-size: 1.4em;
-    }
-
-    #currency {
-        margin-bottom: 35px;
     }
 }
