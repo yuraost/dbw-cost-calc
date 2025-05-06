@@ -47,32 +47,46 @@ defined('ABSPATH') || exit;
             <div class="dbw-cost-calc-fields-types">
                 <?php
                     $types = get_option('dbw-cost-calculator-instance-types');
-                    if (is_array($types)) {
-                        for ($i = 0; $i < count($types['name']); $i++) { ?>
+                    if (is_array($types) && isset($types['name']) && is_array($types['name'])) {
+                        $count = count($types['name']);
+                        for ($i = 0; $i < $count; $i++) {
+                            $name = $types['name'][$i] ?? '';
+                            $usd_price = $types['usd_price'][$i] ?? '';
+                            $eur_price = $types['eur_price'][$i] ?? '';
+                            $nok_price = $types['nok_price'][$i] ?? '';
+                            $link_label = $types['link_label'][$i] ?? '';
+                            $link_url = $types['link_url'][$i] ?? '';
+                            ?>
                             <div class="dbw-cost-calc-field">
                                 <label>
                                     <div class="dbw-cost-call-name-wrap">
-                                        <?= $types['name'][$i]; ?>
+                                        <div class="label-title"><?= esc_html($name); ?></div>
+                                        <div class="label-desc"
+                                            data-usd-price="<?= esc_attr($usd_price); ?>"
+                                            data-eur-price="<?= esc_attr($eur_price); ?>"
+                                            data-nok-price="<?= esc_attr($nok_price); ?>">
+                                            ($<?= esc_html($usd_price); ?>)
+                                        </div>
                                         <?php
-                                            if (!empty($types['link_label'][$i]) && !empty($types['link_url'][$i])) {
-                                                $class = 'dbw-cost-call-res-link';
-                                                $attr = '';
-                                                if (!str_starts_with($types['link_url'][$i], '/') && !str_starts_with($types['link_url'][$i], site_url())) {
-                                                    $class .= ' external-link';
-                                                    $attr .= ' target="_blank" rel="noopener noreferrer"';
-                                                }
-                                                printf(
-                                                    '<a class="%s" href="%s"%s>%s</a>',
-                                                    $class,
-                                                    esc_url($types['link_url'][$i]),
-                                                    $attr,
-                                                    esc_html($types['link_label'][$i])
-                                                );
+                                        if (!empty($link_label) && !empty($link_url)) {
+                                            $class = 'dbw-cost-call-res-link';
+                                            $attr = '';
+                                            if (!str_starts_with($link_url, '/') && !str_starts_with($link_url, site_url())) {
+                                                $class .= ' external-link';
+                                                $attr .= ' target="_blank" rel="noopener noreferrer"';
                                             }
+                                            printf(
+                                                '<a class="%s" href="%s"%s>%s</a>',
+                                                esc_attr($class),
+                                                esc_url($link_url),
+                                                $attr,
+                                                esc_html($link_label)
+                                            );
+                                        }
                                         ?>
                                     </div>
                                     <div>
-                                        <input type="number" name="<?= sanitize_key($types['name'][$i]); ?>" value="0" min="0" max="10000" />
+                                        <input type="number" name="<?= sanitize_key($name); ?>" value="0" min="0" max="10000" />
                                     </div>
                                 </label>
                             </div>
@@ -86,37 +100,49 @@ defined('ABSPATH') || exit;
             <div class="dbw-cost-calc-fields-extra">
                 <?php
                     $addons = get_option('dbw-cost-calculator-addons');
-                    if (is_array($addons)) {
-                        for ($i = 0; $i < count($addons['name']); $i++) { ?>
+                    if (is_array($addons) && isset($addons['name']) && is_array($addons['name'])) {
+                        $count = count($addons['name']);
+                        for ($i = 0; $i < $count; $i++) {
+                            $name = $addons['name'][$i] ?? '';
+                            $usd_price = $addons['usd_price'][$i] ?? '';
+                            $eur_price = $addons['eur_price'][$i] ?? '';
+                            $nok_price = $addons['nok_price'][$i] ?? '';
+                            $platforms = $addons['platforms'][$i] ?? '';
+                            $link_label = $addons['link_label'][$i] ?? '';
+                            $link_url = $addons['link_url'][$i] ?? '';
+                            ?>
                             <div class="dbw-cost-calc-field">
                                 <label>
                                     <div class="dbw-cost-call-name-wrap">
-                                        <div class="label-title"><?= $addons['name'][$i]; ?></div>
-                                        <div class="label-desc" data-usd-price="<?= $addons['price'][$i]; ?>">
-                                            ($<?= $addons['price'][$i]; ?>) for <?= $addons['platforms'][$i]; ?>
+                                        <div class="label-title"><?= esc_html($name); ?></div>
+                                        <div class="label-desc"
+                                            data-usd-price="<?= esc_attr($usd_price); ?>"
+                                            data-eur-price="<?= esc_attr($eur_price); ?>"
+                                            data-nok-price="<?= esc_attr($nok_price); ?>">
+                                            ($<?= esc_html($usd_price); ?>)
                                         </div>
-	                                    <?php
-                                            if (!empty($addons['link_label'][$i]) && !empty($addons['link_url'][$i])) {
-	                                            $class = 'dbw-cost-call-res-link';
-                                                $attr = '';
-	                                            if (!str_starts_with($addons['link_url'][$i], '/') && !str_starts_with($addons['link_url'][$i], site_url())) {
-		                                            $class .= ' external-link';
-                                                    $attr .= ' target="_blank" rel="noopener noreferrer"';
-	                                            }
-                                                printf(
-                                                    '<a class="%s" href="%s"%s>%s</a>',
-	                                                $class,
-                                                    esc_url($addons['link_url'][$i]),
-                                                    $attr,
-                                                    esc_html($addons['link_label'][$i])
-                                                );
+                                        <?php
+                                        if (!empty($link_label) && !empty($link_url)) {
+                                            $class = 'dbw-cost-call-res-link';
+                                            $attr = '';
+                                            if (!str_starts_with($link_url, '/') && !str_starts_with($link_url, site_url())) {
+                                                $class .= ' external-link';
+                                                $attr .= ' target="_blank" rel="noopener noreferrer"';
                                             }
-	                                    ?>
+                                            printf(
+                                                '<a class="%s" href="%s"%s>%s</a>',
+                                                esc_attr($class),
+                                                esc_url($link_url),
+                                                $attr,
+                                                esc_html($link_label)
+                                            );
+                                        }
+                                        ?>
                                     </div>
                                     <div>
-                                        <input type="number" name="<?= sanitize_key($addons['name'][$i]); ?>" value="0" min="0" max="10000" />
+                                        <input type="number" name="<?= sanitize_key($name); ?>" value="0" min="0" max="10000" />
                                     </div>
-                                </label>
+                                </label>                                
                             </div>
                         <?php }
                     }
