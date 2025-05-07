@@ -451,7 +451,7 @@ function dbw_cost_calc_settings_field_instance_types()
                         <span style="display: inline-block; margin-right: 10px;">
                             EUR: <input type="text" name="dbw-cost-calculator-instance-types[eur_price][]" value="<?= esc_attr($type['eur_price']); ?>" required />
                         </span>
-                        <span style="display: inline-block; margin-right: 10px; margin-bottom:">
+                        <span style="display: inline-block; margin-right: 10px; margin-bottom: 15px;">
                             NOK: <input type="text" name="dbw-cost-calculator-instance-types[nok_price][]" value="<?= esc_attr($type['nok_price']); ?>" required />
                         </span>
                     </td>
