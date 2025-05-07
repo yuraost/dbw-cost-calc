@@ -152,10 +152,21 @@ jQuery(document).ready(function($) {
         $supportBlocks.each(function() {
             const $block = $(this);
             const $radio = $block.find('input[type="radio"]');
-            $block.toggleClass('selected', $radio.val() === selectedValue);
+            const $labelSpan = $block.find('.select-footer-block span');
+            
+            if ($radio.val() === selectedValue) {
+                $block.addClass('selected');
+                $labelSpan.text('Selected support');
+            } else {
+                $block.removeClass('selected');
+                $labelSpan.text('Choose');
+            }
         });
         updateSummary();
     });
+    
+    // Trigger update on initial load
+    $supportRadios.filter(':checked').trigger('change');
 
     $supportBlocks.on('click', function(e) {
         if (!$(e.target).is('input[type="radio"]')) {
