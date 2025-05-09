@@ -315,6 +315,15 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
     display: block;
 }
 
+.dbw-cost-calc-fields-types .label-desc {
+    display: none !important;
+}
+
+.dbw-cost-calc-fields-types .label-title {
+    color: #555 !important;
+    font-weight: 600 !important;
+}
+
 .dbw-cost-calc-terms {
     max-width: 765px;
     margin: auto;
@@ -373,7 +382,6 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 #support-levels-container {
     display: flex;
     gap: 3em !important;
-    flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 2rem;
 }
@@ -382,7 +390,7 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 #support-levels-container label {
     width: 320px;
     box-sizing: border-box;
-    padding: 10px 20px;
+    padding: 20px 20px 10px 20px;
     margin-top: 10px;
     border-radius: 25px;
     cursor: pointer;
@@ -396,7 +404,6 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 }
 
 .select-footer-block input:checked + span {
-    padding: 4px 10px;
     border: none !important;
     background-color: #fff !important; 
 }
@@ -525,14 +532,15 @@ form[data-step="thank-you"] .dbw-cost-calc-thank-you {
 .select-footer-block input:checked + span {
     border: 1px solid purple;
     border-radius: 4px;
-    padding: 4px 10px;
     background-color: #f2f2f2;
     font-size: 14px;
 }
 
 #support-levels-container label.selected {
-    border: 2px solid #394494;
     border-radius: 25px;
+    box-shadow:
+  0 0 0 2px #394494 inset,
+  0 0 10px rgba(57, 68, 148, 0.4) inset;
 }
 
 .support-level-block.selected .support-header {
@@ -594,6 +602,7 @@ label {
 }
 
 #currency {
+    border-radius: 6px;
     padding: 10px;
     box-shadow: 0 100px 80px 0 #2245B412,
                 0 41.78px 33.42px 0 #2245B40D,
@@ -601,7 +610,6 @@ label {
                 0 12.52px 10.02px 0 #2245B40A,
                 0 6.65px 5.32px 0 #2245B408,
                 0 2.77px 2.21px 0 #2245B405;
-    border-bottom: 1px solid #394494;
 }
 select {
     font-weight: 600;
@@ -631,7 +639,9 @@ select {
     }
     #support-levels-container {
         gap: 40px;
+        flex-wrap: wrap;
     }
+    
 
 }
 
