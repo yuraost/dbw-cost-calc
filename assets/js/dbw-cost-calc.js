@@ -114,10 +114,16 @@ jQuery(document).ready(function($) {
             const $desc = $(this);
             const price = parseFloat($desc.data(selectedCurrency.toLowerCase() + '-price'));
             if (!isNaN(price)) {
-                const currentText = $desc.text();
-                const platformMatch = currentText.match(/for\s(.+)$/i);
-                const platformText = platformMatch ? platformMatch[1] : '';
-                $desc.text(`(${getCurrencySymbol(selectedCurrency)}${price.toFixed(2)}) for ${platformText}`);
+                const platformText = $desc.data('platform');
+                const formattedPrice = price % 1 === 0 ? price.toString() : price.toFixed(2);
+                const currencySymbol = getCurrencySymbol(selectedCurrency);
+                const priceDisplay = `(${currencySymbol}${formattedPrice})`;
+
+                if (platformText) {
+                    $desc.html(`${priceDisplay} <span class="platform-inline">for ${platformText}</span>`);
+                } else {
+                    $desc.html(priceDisplay);
+                }
             }
         });
     }

@@ -65,25 +65,7 @@ defined('ABSPATH') || exit;
                                             data-usd-price="<?= esc_attr($usd_price); ?>"
                                             data-eur-price="<?= esc_attr($eur_price); ?>"
                                             data-nok-price="<?= esc_attr($nok_price); ?>">
-                                            ($<?= esc_html($usd_price); ?>)
                                         </div>
-                                        <?php
-                                        if (!empty($link_label) && !empty($link_url)) {
-                                            $class = 'dbw-cost-call-res-link';
-                                            $attr = '';
-                                            if (!str_starts_with($link_url, '/') && !str_starts_with($link_url, site_url())) {
-                                                $class .= ' external-link';
-                                                $attr .= ' target="_blank" rel="noopener noreferrer"';
-                                            }
-                                            printf(
-                                                '<a class="%s" href="%s"%s>%s</a>',
-                                                esc_attr($class),
-                                                esc_url($link_url),
-                                                $attr,
-                                                esc_html($link_label)
-                                            );
-                                        }
-                                        ?>
                                     </div>
                                     <div>
                                         <input type="number" name="<?= sanitize_key($name); ?>" value="0" min="0" max="10000" />
@@ -118,25 +100,29 @@ defined('ABSPATH') || exit;
                                         <div class="label-desc"
                                             data-usd-price="<?= esc_attr($usd_price); ?>"
                                             data-eur-price="<?= esc_attr($eur_price); ?>"
-                                            data-nok-price="<?= esc_attr($nok_price); ?>">
+                                            data-nok-price="<?= esc_attr($nok_price); ?>"
+                                            data-platform="<?= esc_attr($platforms); ?>">
                                             ($<?= esc_html($usd_price); ?>)
+                                            <?php if (!empty($platforms)): ?>
+                                                <span class="platform-inline">for <?= esc_html($platforms); ?></span>
+                                            <?php endif; ?>
                                         </div>
                                         <?php
-                                        if (!empty($link_label) && !empty($link_url)) {
-                                            $class = 'dbw-cost-call-res-link';
-                                            $attr = '';
-                                            if (!str_starts_with($link_url, '/') && !str_starts_with($link_url, site_url())) {
-                                                $class .= ' external-link';
-                                                $attr .= ' target="_blank" rel="noopener noreferrer"';
+                                            if (!empty($link_label) && !empty($link_url)) {
+                                                $class = 'dbw-cost-call-res-link';
+                                                $attr = '';
+                                                if (!str_starts_with($link_url, '/') && !str_starts_with($link_url, site_url())) {
+                                                    $class .= ' external-link';
+                                                    $attr .= ' target="_blank" rel="noopener noreferrer"';
+                                                }
+                                                printf(
+                                                    '<a class="%s" href="%s"%s>%s</a>',
+                                                    esc_attr($class),
+                                                    esc_url($link_url),
+                                                    $attr,
+                                                    esc_html($link_label)
+                                                );
                                             }
-                                            printf(
-                                                '<a class="%s" href="%s"%s>%s</a>',
-                                                esc_attr($class),
-                                                esc_url($link_url),
-                                                $attr,
-                                                esc_html($link_label)
-                                            );
-                                        }
                                         ?>
                                     </div>
                                     <div>
