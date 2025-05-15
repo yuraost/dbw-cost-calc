@@ -1,7 +1,7 @@
 <?php
 defined('ABSPATH') || exit;
 ?>
-<form id="dbw-cost-calc-form" class="dbw-cost-calc-form" action="/" method="post" data-step="get-quote">
+<form id="dbw-cost-calc-form" class="dbw-cost-calc-form" action="/" method="post" data-step="quote-submit">
     <?php
     $currencies = get_option('dbw-cost-calculator-currencies', []);
     $defaults = ['USD' => 1, 'EUR' => 0.9, 'NOK' => 10];
@@ -243,9 +243,6 @@ defined('ABSPATH') || exit;
     </div>
 
     <div class="dbw-cost-calc-get-quote">
-        <div class="dbw-cost-calc-get-quote-btn">
-            <button id="get-quote-btn" class="dbw-cost-calc-btn">Get a Quote</button>
-        </div>
         <div class="dbw-cost-calc-get-quote-fields">
             <div class="dbw-cost-calc-get-quote-field">
                 <label>
